@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cos Admin</title>
+        <h:outputStylesheet name="css/estilosGenerales.css"  />
+    </h:head>
+    <h:body>
+        
+        <h:form>
+            <p:dialog id="dialogLogin" styleClass="dialogLogin" appendTo="@(body)" resizable="false" closeOnEscape="false" modal="true" responsive="true" header="Iniciar sesi&oacute;n" closable="false" visible="true" draggable="false">
+                <h:panelGrid columns="2" cellspacing="10">
+                    <p:outputLabel value="Usuario: " />
+                    <p:inputText styleClass="inputLogin"/>
+                    
+                    <p:outputLabel value="Empresa: " />
+                    <p:selectOneMenu styleClass="inputLogin">
+                        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                        <f:selectItem itemValue="1" itemLabel="Empresa 1"/>
+                        <f:selectItem itemValue="2" itemLabel="Empresa 2"/>
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel value="Contrase&ntilde;a: " />
+                    <p:inputText type="password" styleClass="inputLogin"/>
+                    
+                    <f:facet name="footer">
+                        <p:commandButton value="Ingresar"/>
+                    </f:facet>
+                </h:panelGrid>
+               
+
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
+

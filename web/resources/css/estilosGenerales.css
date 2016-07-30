@@ -1,0 +1,17 @@
+body{ 
+    background-image: url('../imagenes/fondoLogin.jpg'); 
+    background-repeat: repeat-y; 
+    background-size: 100%; 
+} 
+
+.dialogLogin{
+    background-image: url('../imagenes/LOGO_1.BMP');
+    background-repeat: no-repeat;
+    background-size: 53%;
+    background-position: bottom right;
+}
+
+.inputLogin{
+    opacity: 0.8;
+    width: 100%;
+}

@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>              
+            <h:form id="formPrincipalEmpresa">
+                <p:growl showDetail="true"/>            
+                <p:tooltip showEffect="fade" hideEffect="fade"/>            
+
+                <p:toolbar id="toolBarEmpresa">
+                    <f:facet name="left">                        
+                        <p:commandButton widgetVar="btnNuevoEmpresa" icon="fa fa-fw fa-file-o" title="Nuevo" update="dialogFormEmpresa" oncomplete="PF('dialogFormEmpresa').show();" />                         
+                        <p:commandButton widgetVar="btnEditarEmpresa" icon="fa fa-fw fa-edit" title="Editar" update="dialogFormEmpresa" />
+                        <p:commandButton widgetVar="btnEliminarEmpresa" icon="fa fa-fw fa-trash-o" id="bntEliminaEmpresaTool" title="Eliminar" update=",tablaEmpresa">
+                            <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>
+                        </p:commandButton>                        
+                        <span class="ui-separator">
+                            <span class="ui-icon ui-icon-grip-dotted-vertical"/>
+                        </span>
+                        <p:commandButton widgetVar="btnDetalleEmpresa" icon="fa fa-fw fa-eye" title="Ver" update=""/>
+                    </f:facet>                    
+                </p:toolbar>
+                <p:contextMenu for="tablaEmpresa">
+                    <p:menuitem value="Ver" icon="fa fa-fw fa-eye" />
+                    <p:menuitem value="Editar" icon="fa fa-fw fa-edit" update=""/>
+                    <p:menuitem id="bntEliminaEmpresa" value="Eliminar" icon="fa fa-fw fa-trash-o" update=",tablaEmpresa">
+                        <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
+                    </p:menuitem>
+                </p:contextMenu>
+                <p:dataTable id="tablaEmpresa" value="#{empresaBean.empresaCatalogo}" var="empresa" rowKey="#{empresa.idEmpresa}" widgetVar="tablaEmpresa" selectionMode="single" selection="#{empresaBean.empresaSeleccionada}" style="margin-top: 10px;" paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <p:outputLabel value="Buscar:" for="globalFilter" />
+                            <p:inputText id="globalFilter" onkeyup="PF('tablaEmpresa').filter()" style="width:150px" placeholder="Palabra(s) clave"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Num" sortBy="#{empresa.idEmpresa}" filterBy="#{empresa.idEmpresa}" filterMatchMode="contains">
+                        <h:outputText value="#{empresa.idEmpresa}" />
+                    </p:column>
+                    <p:column headerText="Razon social" sortBy="#{empresa.empRazonSocial}" filterBy="#{empresa.empRazonSocial}" filterMatchMode="contains">
+                        <h:outputText value="#{empresa.empRazonSocial}" />
+                    </p:column>
+                    <p:column headerText="RFC" sortBy="#{empresa.empRFC}" filterBy="#{empresa.empRFC}" filterMatchMode="contains">
+                        <h:outputText value="#{empresa.empRFC}" />
+                    </p:column>
+                    <p:column headerText="Administrador" sortBy="#{empresa.empAdministrador}" filterBy="#{empresa.empAdministrador}" filterMatchMode="contains">
+                        <h:outputText value="#{empresa.empAdministrador}" />
+                    </p:column>
+
+                    <p:ajax event="rowSelect" update="dialogFormEmpresa,dialogDetalleEmpresa" listener="#{empresaBean.selectElemento}"/>
+                    <p:ajax event="contextMenu" update="dialogFormEmpresa,dialogDetalleEmpresa" listener="#{empresaBean.selectElemento}"/> 
+                </p:dataTable>                
+                <p:blockUI block="tablaEmpresa" trigger="bntEliminaEmpresa,bntEliminaEmpresaTool" widgetVar="blockTabla">
+                    <p:graphicImage name="imagenes/load3.gif"/>
+                    <p style="font-size:14px; color: black;">
+                        Cargando...
+                    </p> 
+                </p:blockUI>  
+
+            </h:form>
+            <p:dialog modal="true" header="Note" appendTo="@(body)" closeOnEscape="true" id="dialogFormEmpresa" widgetVar="dialogFormEmpresa" dynamic="true" >
+                <h:form id="formEmpresa">
+                    <p:outputPanel id="panelFormEmpresa">
+                        <p:panelGrid columns="4">
+                            <p:outputLabel value="Month:" for="monthNota"/>
+                            <p:selectOneMenu id="monthNota" required="true">
+                                <f:selectItem itemValue="" itemLabel="Select"/>
+                                <f:selectItem itemValue="ENE" itemLabel="ENE"/>
+                                <f:selectItem itemValue="FEB" itemLabel="FEB"/>
+                                <f:selectItem itemValue="MAR" itemLabel="MAR"/>
+                                <f:selectItem itemValue="ABR" itemLabel="ABR"/>
+                                <f:selectItem itemValue="MAY" itemLabel="MAY"/>
+                                <f:selectItem itemValue="JUN" itemLabel="JUN"/>
+                                <f:selectItem itemValue="JUL" itemLabel="JUL"/>
+                                <f:selectItem itemValue="AGO" itemLabel="AGO"/>
+                                <f:selectItem itemValue="SEP" itemLabel="SEP"/>
+                                <f:selectItem itemValue="OCT" itemLabel="OCT"/>
+                                <f:selectItem itemValue="NOV" itemLabel="NOV"/>
+                                <f:selectItem itemValue="DIC" itemLabel="DIC"/>
+                            </p:selectOneMenu>
+
+
+                        </p:panelGrid>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Note:" for="textoNota"/>
+                            <p:outputPanel>
+                                <p:panelGrid columns="1">
+                                    <p:inputTextarea required="true" rows="5" cols="30" counter="display" maxlength="100" counterTemplate="{0} characters remaining." autoResize="false" id="textoNota" />
+                                    <h:outputText id="display" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:panelGrid>
+                        <p:separator/> 
+                        <p:commandButton id="btnEjecutarAccion" value="Execute" update="formEmpresa,formEmpresa" >
+                            <p:confirm header="Confirm" message="Are you sure?"/>                         
+                        </p:commandButton>
+                        <p:blockUI block="formEmpresa" trigger="btnEjecutarAccion">
+                            <p:graphicImage name="imagenes/load3.gif"/>
+                            <p style="font-size:14px; color: black;">
+                                Cargando...
+                            </p> 
+                        </p:blockUI> 
+                    </p:outputPanel>                
+                </h:form>
+                <p:ajax event="close" update="formEmpresa,:formEmpresa" process="@this"/>
+            </p:dialog>
+            <p:dialog modal="true" header="Note" appendTo="@(body)" closeOnEscape="true" id="dialogDetalleEmpresa" widgetVar="dialogDetalleEmpresa" dynamic="true">            
+                <p:outputPanel>
+                    <p:panelGrid columns="2" columnClasses="etiquetaCSS,valorCSS">
+                        <h:outputText value="Month:"/>
+                        <h:outputText value="mes"/>
+
+                        <h:outputText value="Country:"/>
+                        <h:outputText value="pais"/>
+
+                        <h:outputText value="Note:"/>
+                        <h:outputText value="nota"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </ui:composition>
+    </h:body>
+</html>
+

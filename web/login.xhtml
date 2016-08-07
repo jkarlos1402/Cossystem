@@ -10,31 +10,34 @@
         <h:outputStylesheet name="css/estilosGenerales.css"  />
     </h:head>
     <h:body>
-        
-        <h:form>
-            <p:dialog id="dialogLogin" styleClass="dialogLogin" appendTo="@(body)" resizable="false" closeOnEscape="false" modal="true" responsive="true" header="Iniciar sesi&oacute;n" closable="false" visible="true" draggable="false">
-                <h:panelGrid columns="2" cellspacing="10">
-                    <p:outputLabel value="Usuario: " />
-                    <p:inputText styleClass="inputLogin"/>
-                    
-                    <p:outputLabel value="Empresa: " />
-                    <p:selectOneMenu styleClass="inputLogin">
-                        <f:selectItem itemValue="" itemLabel="Seleccione"/>
-                        <f:selectItem itemValue="1" itemLabel="Empresa 1"/>
-                        <f:selectItem itemValue="2" itemLabel="Empresa 2"/>
-                    </p:selectOneMenu>
-                    
-                    <p:outputLabel value="Contrase&ntilde;a: " />
-                    <p:inputText type="password" styleClass="inputLogin"/>
-                    
-                    <f:facet name="footer">
-                        <p:commandButton value="Ingresar"/>
-                    </f:facet>
-                </h:panelGrid>
-               
+        <p:dialog id="dialogLogin" styleClass="dialogLogin" appendTo="@(body)" resizable="false" closeOnEscape="false" modal="true" responsive="true" header="Iniciar sesi&oacute;n" closable="false" visible="true" draggable="false">
+            <h:form id="formLogin">
+                <p:growl/>
+                <h:panelGrid columns="1" cellspacing="10">
+                    <p:outputLabel value="Usuario: " styleClass="labelLogin"/>
+                    <p:inputText required="true" styleClass="inputLogin" value="#{loginBean.user}" requiredMessage="Ingrese usuario"/>
 
-            </p:dialog>
-        </h:form>
+                    <p:outputLabel value="Empresa: " styleClass="labelLogin"/>
+                    <p:selectOneMenu required="true" styleClass="inputLogin" value="#{loginBean.empresa}" converter="genericConverter" requiredMessage="Seleccione empresa">
+                        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                        <f:selectItems value="#{loginBean.catEmpresas}" var="empresaLogin" itemLabel="#{empresaLogin.empRazonSocial}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="Contrase&ntilde;a: " styleClass="labelLogin"/>
+                    <p:inputText required="true" type="password" styleClass="inputLogin" value="#{loginBean.password}" requiredMessage="Ingrese contrase&ntilde;a"/>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="btnEntrar" value="Ingresar" action="#{loginBean.logIn}" update=":formLogin"/>
+                    </f:facet>
+                    <p:blockUI block="formLogin" trigger="btnEntrar" animate="true" class="blockLogin">                        
+                        <h:panelGrid columns="1">
+                            <p:graphicImage name="imagenes/load3.gif" width="50%" style="background: transparent;"/>
+                            <h:outputText value="Cargando..."/>
+                        </h:panelGrid>
+                    </p:blockUI>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
     </h:body>
 </html>
 

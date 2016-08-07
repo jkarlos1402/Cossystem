@@ -2,6 +2,7 @@ body{
     background-image: url('../imagenes/fondoLogin.jpg'); 
     background-repeat: repeat-y; 
     background-size: 100%; 
+    font-size: 14px;
 } 
 
 .dialogLogin{
@@ -14,4 +15,8 @@ body{
 .inputLogin{
     opacity: 0.8;
     width: 100%;
+}
+
+.labelLogin{
+    font-size: 12px !important;
 }

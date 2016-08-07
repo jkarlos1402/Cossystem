@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>              
+            <h:form id="formPrincipalEmpleado">
+                <p:growl showDetail="true"/>            
+                <p:tooltip showEffect="fade" hideEffect="fade"/>            
+
+                <p:toolbar id="toolBarEmpleado">
+                    <f:facet name="left">                        
+                        <p:commandButton widgetVar="btnNuevoEmpleado" icon="fa fa-fw fa-file-o" title="Nuevo" update="dialogFrmEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>                         
+                        <p:commandButton widgetVar="btnEditarEmpleado" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado" />
+                        <p:commandButton widgetVar="btnEliminarEmpleado" icon="fa fa-fw fa-trash-o" id="bntEliminaEmpleadoTool" title="Eliminar" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
+                            <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>
+                        </p:commandButton>                        
+                        <span class="ui-separator">
+                            <span class="ui-icon ui-icon-grip-dotted-vertical"/>
+                        </span>
+                        <p:commandButton widgetVar="btnDetalleEmpleado" icon="fa fa-fw fa-eye" title="Ver" update=""/>
+                    </f:facet>                    
+                </p:toolbar>                
+                <p:dataTable id="tablaEmpleado" value="#{empleadoTablaBean.elementoCatalogo}" var="empleado" rowKey="#{empleado.idEmpleado}" widgetVar="tablaEmpleado" selectionMode="single" selection="#{empleadoTablaBean.elementoSeleccionado}" style="margin-top: 10px;" paginator="true" rows="10" paginatorPosition="bottom" paginatorAlwaysVisible="false">
+                    <f:facet name="header">
+                        <p:outputPanel style="text-align: right;">
+                            <p:outputLabel value="Buscar:" for="globalFilter" />
+                            <p:inputText id="globalFilter" onkeyup="PF('tablaEmpleado').filter()" style="width:150px" placeholder="Palabra(s) clave"/>
+                        </p:outputPanel>
+                    </f:facet>
+                    <p:column headerText="Clave empleado" sortBy="#{empleado.claveEmpleado}" filterBy="#{empleado.claveEmpleado}" filterMatchMode="contains">
+                        <h:outputText value="#{empleado.claveEmpleado}" />
+                    </p:column>
+                    <p:column headerText="Area" sortBy="#{empleado.idArea}" filterBy="#{empleado.idArea}" filterMatchMode="contains">
+                        <h:outputText value="#{empleado.idArea}" />
+                    </p:column>
+                    <p:column headerText="Nombre" sortBy="#{empleado.nombre}" filterBy="#{empleado.nombre}" filterMatchMode="contains">
+                        <h:outputText value="#{empleado.nombre}" />
+                    </p:column>
+                    <p:column headerText="RFC" sortBy="#{empleado.rfc}" filterBy="#{empleado.rfc}" filterMatchMode="contains">
+                        <h:outputText value="#{empleado.rfc}" />
+                    </p:column>
+                    <p:column headerText="E-Mail" sortBy="#{empleado.email}" filterBy="#{empleado.email}" filterMatchMode="contains">
+                        <h:outputText value="#{empleado.email}" />
+                    </p:column>
+
+                    <p:ajax event="rowSelect" update="dialogFrmEmpleado,dialogDetalleEmpleado" listener="#{empleadoTablaBean.selectElemento}"/>
+                    <p:ajax event="contextMenu" update="dialogFrmEmpleado,dialogDetalleEmpleado" listener="#{empleadoTablaBean.selectElemento}"/> 
+                </p:dataTable>
+                <p:contextMenu for="tablaEmpleado">
+                    <p:menuitem value="Ver" icon="fa fa-fw fa-eye" />
+                    <p:menuitem value="Editar" icon="fa fa-fw fa-edit" update=""/>
+                    <p:menuitem id="bntEliminaEmpleado" value="Eliminar" icon="fa fa-fw fa-trash-o" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
+                        <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
+                    </p:menuitem>
+                </p:contextMenu>                
+                <p:blockUI block="tablaEmpleado" trigger="bntEliminaEmpleado,bntEliminaEmpleadoTool" widgetVar="blockTabla">
+                    <p:graphicImage name="imagenes/load3.gif"/>
+                    <p style="font-size:14px; color: black;">
+                        Cargando...
+                    </p> 
+                </p:blockUI>  
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="S&iacute;" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+            </h:form>
+            <p:dialog modal="true" header="#{empleadoTablaBean.nombreDialogFrm}" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" dynamic="true" maximizable="true">
+                <ui:include src="frm_empleado.xhtml"/>
+                <p:ajax event="close" update=":formFrmEmpleado" process="@this"/>
+            </p:dialog>
+            <p:dialog modal="true" header="Note" appendTo="@(body)" closeOnEscape="true" id="dialogDetalleEmpleado" widgetVar="dialogDetalleEmpleado" dynamic="true">            
+                <p:outputPanel>
+                    <p:panelGrid columns="2" columnClasses="etiquetaCSS,valorCSS">
+                        <h:outputText value="Month:"/>
+                        <h:outputText value="mes"/>
+
+                        <h:outputText value="Country:"/>
+                        <h:outputText value="pais"/>
+
+                        <h:outputText value="Note:"/>
+                        <h:outputText value="nota"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>            
+        </ui:composition>
+    </h:body>
+</html>
+

@@ -2,8 +2,6 @@ package com.cossystem.managedbean.empleado;
 
 import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.DAOException;
-import com.cossystem.core.exception.DataBaseException;
-import com.cossystem.core.pojos.catalogos.CatEmpStatus;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
 import java.io.Serializable;

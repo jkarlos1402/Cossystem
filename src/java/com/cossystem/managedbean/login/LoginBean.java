@@ -115,7 +115,7 @@ public class LoginBean implements Serializable {
         fechaHoy.set(Calendar.HOUR, 0);
         fechaHoy.set(Calendar.MINUTE, 0);
         fechaHoy.set(Calendar.SECOND, 0);
-        fechaHoy.set(Calendar.MILLISECOND, 0);     
+        fechaHoy.set(Calendar.MILLISECOND, 0);
         try {
             genericDAO = new GenericDAO();
             mapaComponentes = new TreeMap<>();
@@ -141,7 +141,9 @@ public class LoginBean implements Serializable {
                     actividadHoy.setIdStatusAsistencia(1);
                     actividadHoy.setNota("");
                     genericDAO.saveOrUpdate(actividadHoy);
-                    usuarioSesion.getIdEmpleado().setIdActividad(actividadHoy);
+                    if (usuarioSesion.getIdEmpleado() != null) {
+                        usuarioSesion.getIdEmpleado().setIdActividad(actividadHoy);
+                    }
                 }
                 usuarioSesion.setIdconectado(1);
                 usuarioSesion.setNumvisitas(usuarioSesion.getNumvisitas() + 1);
@@ -150,14 +152,14 @@ public class LoginBean implements Serializable {
                 usuarioSesion.setFechaInicial(new Date());
                 genericDAO.saveOrUpdate(usuarioSesion);
                 httpSession.setAttribute("session_user", usuarioSesion);
-                httpSession.setAttribute("genericdao_user", new GenericDAO());
+//                httpSession.setAttribute("genericdao_user", new GenericDAO());
                 System.out.println("Ya entro Autorizado");
                 return "correct";
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: User or password incorrect", ""));
                 return "Login";
             }
-        } catch (DAOException | DataBaseException e) {            
+        } catch (DAOException | DataBaseException e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: " + e.getMessage(), null));
             return "Login";
         } finally {

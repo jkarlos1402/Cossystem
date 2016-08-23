@@ -29,7 +29,7 @@
                     <f:facet name="footer">
                         <p:commandButton id="btnEntrar" value="Ingresar" action="#{loginBean.logIn}" update=":formLogin"/>
                     </f:facet>
-                    <p:blockUI block="formLogin" trigger="btnEntrar" animate="true" class="blockLogin">                        
+                    <p:blockUI block="formLogin" trigger="btnEntrar" animate="true" styleClass ="blockLogin">                        
                         <h:panelGrid columns="1">
                             <p:graphicImage name="imagenes/load3.gif" width="50%" style="background: transparent;"/>
                             <h:outputText value="Cargando..."/>

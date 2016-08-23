@@ -2,18 +2,23 @@ package com.cossystem.managedbean.empleado;
 
 import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.DAOException;
+import com.cossystem.core.exception.DataBaseException;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
+import com.cossystem.managedbean.PrincipalBean;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -24,22 +29,30 @@ import org.primefaces.context.RequestContext;
 @ViewScoped
 public class EmpleadoTablaBean implements Serializable {
 
-    //Todos los beans administrados deben contener los siguientes atributos
-    private final GenericDAO genericDAO;
-    private final CatUsuarios usuarioSesion;
+    //Todos los beans administrados de tabla deben contener los siguientes atributos
+    private CatUsuarios usuarioSesion;
     private String nombreDialogFrm = "";
 
-    private TblEmpleados elementoNuevo;
+    private TblEmpleados elementoNuevo = new TblEmpleados();
     private TblEmpleados elementoSeleccionado;
     private List<TblEmpleados> elementoCatalogo;
+
+    @ManagedProperty(value = "#{principalBean}")
+    private PrincipalBean principalBean;
+
+    @ManagedProperty(value = "#{empleadoFrmBean}")
+    private EmpleadoFrmBean empleadoFrmBean;
 
     /**
      * Creates a new instance of AlertasBean
      */
     public EmpleadoTablaBean() {
-        HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        usuarioSesion = (CatUsuarios) httpSession.getAttribute("session_user");
-        genericDAO = (GenericDAO) httpSession.getAttribute("genericdao_user");
+
+    }
+
+    @PostConstruct
+    public void init() {
+        usuarioSesion = principalBean.getUsuarioSesion();
         refreshElementoCatalogo();
     }
 
@@ -49,14 +62,21 @@ public class EmpleadoTablaBean implements Serializable {
             case "nuevo":
                 elementoSeleccionado = null;
                 elementoNuevo = new TblEmpleados();
-                nombreDialogFrm = "Cat\u00E1logo de Empleados - Agregar registros";
+                empleadoFrmBean.setEmpleado(elementoNuevo);
+                empleadoFrmBean.setPermissionToWrite(true);
+                empleadoFrmBean.init();
+                nombreDialogFrm = "Cat\u00E1logo de Empleados - Agregar registro";
                 RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
             case "editar":
                 if (elementoSeleccionado != null) {
+                    empleadoFrmBean.setEmpleado(elementoSeleccionado);
+                    empleadoFrmBean.setPermissionToWrite(true);
+                    empleadoFrmBean.init();
+                    nombreDialogFrm = "Cat\u00E1logo de Empleados - Editar registro";
                     RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 } else {
-                    message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atencion", "Ning\u00FAn elemento seleccionado.");
+                    message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenci\u00f3n", "Ning\u00FAn elemento seleccionado.");
                 }
                 if (message != null) {
                     FacesContext.getCurrentInstance().addMessage(null, message);
@@ -64,13 +84,21 @@ public class EmpleadoTablaBean implements Serializable {
                 break;
             case "ver":
                 if (elementoSeleccionado != null) {
+                    empleadoFrmBean.setEmpleado(elementoSeleccionado);
+                    empleadoFrmBean.setPermissionToWrite(false);
+                    empleadoFrmBean.init();
+                    nombreDialogFrm = "Cat\u00E1logo de Empleados - Ver registro";
                     RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 } else {
-                    message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atencion", "Ning\u00FAn elemento seleccionado.");
+                    message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenci\u00f3n", "Ning\u00FAn elemento seleccionado.");
                 }
                 if (message != null) {
                     FacesContext.getCurrentInstance().addMessage(null, message);
                 }
+                break;
+            case "imprimir":
+                nombreDialogFrm = "Cat\u00E1logo de Empleados - Reporte";
+                RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
         }
     }
@@ -78,11 +106,17 @@ public class EmpleadoTablaBean implements Serializable {
     public void refreshElementoCatalogo() {
         FacesMessage message = null;
         TreeMap mapaComponentes = new TreeMap<>();
+        GenericDAO genericDAO = null;
         try {
+            genericDAO = new GenericDAO();
             mapaComponentes.put("idEmpresa", usuarioSesion.getIdEmpresa());
             elementoCatalogo = genericDAO.findByComponents(TblEmpleados.class, mapaComponentes);
-        } catch (DAOException ex) {
+        } catch (DAOException | DataBaseException ex) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
+        } finally {
+            if (genericDAO != null) {
+                genericDAO.closeDAO();
+            }
         }
         if (message != null) {
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -135,41 +169,51 @@ public class EmpleadoTablaBean implements Serializable {
 //
 
     public void selectElemento() {
+        FacesMessage message = null;
         if (elementoNuevo == null) {
             elementoNuevo = new TblEmpleados();
         }
         Field[] campos = elementoNuevo.getClass().getDeclaredFields();
-        System.out.println("empleado: " + elementoNuevo);
-        System.out.println("empleado seleccionada: " + elementoSeleccionado);
+        Method[] metodos = elementoNuevo.getClass().getMethods();
         for (Field campo : campos) {
             try {
                 if ((Modifier.PRIVATE + Modifier.STATIC + Modifier.FINAL) != campo.getModifiers()) {
                     campo.setAccessible(true);
-                    campo.set(elementoNuevo, campo.get(elementoSeleccionado));
+                    for (Method metodo : metodos) {
+                        if (metodo.getName().equalsIgnoreCase("get" + campo.getName())) {
+                            campo.set(elementoNuevo, metodo.invoke(elementoSeleccionado));
+                            break;
+                        }
+                    }
                 }
-            } catch (IllegalArgumentException | IllegalAccessException ex) {
-                System.out.println("error: " + ex.getMessage());
-                //to do
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex) {
+                message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
             }
         }
-        System.out.println("empleado1: " + elementoNuevo);
-        System.out.println("empleado seleccionada1: " + elementoSeleccionado);
+        if (message != null) {
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
     }
-//
-//    public void cerroDialog() {
-//        RequestContext.getCurrentInstance().reset("formOrderNotas:panelFormOrderNotas");
-//    }
-//
+
+    public void cerroDialogElemento() {
+        System.out.println("se limpiara");
+        RequestContext.getCurrentInstance().reset("formFrmEmpleado");
+    }
 
     public void eliminaElemento(final String nombreTabla) {
         FacesMessage message;
+        GenericDAO genericDAO = null;
         if (elementoSeleccionado != null) {
             try {
+                genericDAO = new GenericDAO();
                 genericDAO.delete(elementoSeleccionado);
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "El elemento ha sido eliminado");
-            } catch (DAOException ex) {
+            } catch (DAOException | DataBaseException ex) {
                 message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
             } finally {
+                if (genericDAO != null) {
+                    genericDAO.closeDAO();
+                }
                 refreshElementoCatalogo();
                 RequestContext.getCurrentInstance().execute("PF('" + nombreTabla + "').filter()");
             }
@@ -209,6 +253,26 @@ public class EmpleadoTablaBean implements Serializable {
 
     public void setNombreDialogFrm(String nombreDialogFrm) {
         this.nombreDialogFrm = nombreDialogFrm;
+    }
+
+    public CatUsuarios getUsuarioSesion() {
+        return usuarioSesion;
+    }
+
+    public PrincipalBean getPrincipalBean() {
+        return principalBean;
+    }
+
+    public void setPrincipalBean(PrincipalBean principalBean) {
+        this.principalBean = principalBean;
+    }
+
+    public EmpleadoFrmBean getEmpleadoFrmBean() {
+        return empleadoFrmBean;
+    }
+
+    public void setEmpleadoFrmBean(EmpleadoFrmBean empleadoFrmBean) {
+        this.empleadoFrmBean = empleadoFrmBean;
     }
 
 }

@@ -76,7 +76,7 @@ public class EmpresaBean implements Serializable {
 //        }
 //    }
 //
-    public void refreshEmpresaCatalogo() {
+    public void refreshEmpresaCatalogo() {        
         FacesMessage message = null;
         GenericDAO genericDAO = null;
         TreeMap mapaComponentes = new TreeMap<>();

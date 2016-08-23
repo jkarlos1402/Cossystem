@@ -44,5 +44,13 @@
     <mime-mapping>  
         <extension>ttf</extension>  
         <mime-type>application/x-font-ttf</mime-type>  
-    </mime-mapping>  
+    </mime-mapping>      
+    <error-page>
+        <error-code>404</error-code>
+        <location>/faces/error/error404.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/faces/error/error404.xhtml</location>
+    </error-page>    
 </web-app>

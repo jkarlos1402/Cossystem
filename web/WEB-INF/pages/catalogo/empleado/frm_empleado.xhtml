@@ -9,27 +9,255 @@
         <title>Facelet Title</title>
     </h:head>
     <h:body>
-        <ui:composition>              
-            <h:form id="formFrmEmpleado">
-                <p:outputPanel id="panelFormEmpleado">
-                    <p:panelGrid columns="4">
-                        <p:outputLabel value="POR HACER" for="monthNota"/>
-                        
+        <ui:composition>
+            <h:form id="formFrmEmpleado">                 
+                <p:panelGrid id="panelformFrmEmpleado" columns="4" styleClass="panelSinBordes">
+                    <p:outputLabel value="EMPRESA:" for="empresaEmpleado"/>
+                    <h:outputText id="empresaEmpleado" value="#{empleadoFrmBean.empleado.idEmpresa.empRazonSocial}" styleClass="inputFrm"/>
 
+                    <p:outputLabel value="CORREO:" for="correoEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="correoEmpleado" value="#{empleadoFrmBean.empleado.email}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="CLAVE EMPLEADO:" for="claveEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="claveEmpleado" value="#{empleadoFrmBean.empleado.claveEmpleado}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="CONTACTO:" for="contactoEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="contactoEmpleado" value="#{empleadoFrmBean.empleado.idEmpleadoContacto}" converter="genericConverter" styleClass="comboInput" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoContacto}" var="itemContacto" itemLabel="#{itemContacto.nombre}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="TELEFONO:" for="telefonoEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="telefonoEmpleado" value="#{empleadoFrmBean.empleado.telefono}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="ORIGEN:" for="origenEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="origenEmpleado" value="#{empleadoFrmBean.empleado.idEmpleadoOrigen}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoEmpleadoOrigen}" var="itemOrigen" itemLabel="#{itemOrigen.empOrigenDescripcion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>                       
+
+                    <p:outputLabel value="TELEFONO PARTICULAR:" for="telefonoParticularEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="telefonoParticularEmpleado" value="#{empleadoFrmBean.empleado.telefonoParticular}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="&Aacute;REA:" for="areaEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="areaEmpleado" value="#{empleadoFrmBean.empleado.idArea}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <p:ajax update="departamentoEmpleado" listener="#{empleadoFrmBean.listenerSelectArea()}"/>
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoArea}" />                            
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid> 
+
+                    <p:outputLabel value="TELEFONO MOVIL:" for="telefonoMovilEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="telefonoMovilEmpleado" value="#{empleadoFrmBean.empleado.telefonoMovil}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="DEPARTAMENTO:" for="departamentoEmpleado"/>
+                    <p:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" columnClasses=",tdBotonCatalogo" >
+                        <p:selectOneMenu id="departamentoEmpleado" value="#{empleadoFrmBean.empleado.idDepartamento}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoDepartamento}" var="itemDepartamento" itemLabel="#{itemDepartamento.depNombre}" />
+                            <p:ajax event="itemSelect" update="puestoEmpleado,centroCostosEmpleado" listener="#{empleadoFrmBean.listenerSelectDepartamento()}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </p:panelGrid>
-                   
-                    <p:separator/> 
-                    <p:commandButton id="btnEjecutarAccion" value="Execute" update="formFrmEmpleado" >
-                        <p:confirm header="Confirm" message="Are you sure?"/>                         
-                    </p:commandButton>
-                    <p:blockUI block="formFrmEmpleado" trigger="btnEjecutarAccion">
-                        <p:graphicImage name="imagenes/load3.gif"/>
-                        <p style="font-size:14px; color: black;">
-                            Cargando...
-                        </p> 
-                    </p:blockUI> 
-                </p:outputPanel>                
-            </h:form>
+
+                    <p:outputLabel value="DESCRIPCI&Oacute;N GENERAL:" for="descGeneralEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="descGeneralEmpleado" value="#{empleadoFrmBean.empleado.descripcionGeneral}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="UBICACI&Oacute;N:" for="ubicacionEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="ubicacionEmpleado" value="#{empleadoFrmBean.empleado.idUbicacion}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoUbicacion}" var="itemUbicacion" itemLabel="#{itemUbicacion.descripcion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="ACTIVIDAD ACTUAL:" for="actividadActualEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="actividadActualEmpleado" value="#{empleadoFrmBean.empleado.actividadActual}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="PUESTO:" for="puestoEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="puestoEmpleado" value="#{empleadoFrmBean.empleado.idPuesto}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoPuestos}" var="itemPuesto" itemLabel="#{itemPuesto.puestoNombre}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="ACTIVIDAD FECHA:" for="actividadFechaEmpleado"/>                        
+                    <p:calendar id="actividadFechaEmpleado" value="#{empleadoFrmBean.empleado.actividadFecha}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="NIVEL:" for="nivelEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="nivelEmpleado" value="#{empleadoFrmBean.empleado.idNivel}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoNivel}" var="itemNivel" itemLabel="#{itemNivel.nivelNombre}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="ACTIVIDAD:" for="actividadEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="actividadEmpleado" value="#{empleadoFrmBean.empleado.idActividad}" converter="genericConverter" styleClass="comboInput" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoActividad}" var="itemActividad" itemLabel="#{itemActividad.actividadDescripcion}" />
+                            <p:ajax event="itemSelect" update="actividadDetEmpleado" listener="#{empleadoFrmBean.listenerSelectActividad()}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="SEXO:" for="sexoEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="sexoEmpleado" value="#{empleadoFrmBean.empleado.idSexo}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoSexo}" var="itemSexo" itemLabel="#{itemSexo.sexoDescripcion}" />
+                        </p:selectOneMenu>                         
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoSexo').show()" icon="fa fa-fw fa-search"/>                                                
+                    </h:panelGrid>
+
+                    <p:outputLabel value="ACTIVIDAD DETALLE:" for="actividadDetEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="actividadDetEmpleado" value="#{empleadoFrmBean.empleado.idActividadDet}" converter="genericConverter" styleClass="comboInput" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoActividadDet}" var="itemActividadDet" itemLabel="#{itemActividadDet.descripcion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="CENTRO DE COSTOS:" for="centroCostosEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="centroCostosEmpleado" value="#{empleadoFrmBean.empleado.idCentroCostos}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoCentros}" var="itemCeco" itemLabel="#{itemCeco.centroCostosNombre}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="PUEDE REASIGNAR:" for="reasignarEmpleado"/>
+                    <p:selectBooleanCheckbox id="reasignarEmpleado" value="#{empleadoFrmBean.empleado.idTicketReasignar}" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="ESTATUS:" for="estatusEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="estatusEmpleado" value="#{empleadoFrmBean.empleado.idstatus}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoEstatus}" var="itemEstatus" itemLabel="#{itemEstatus.descripcion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="ESTADO:" for="estadoEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="estadoEmpleado" value="#{empleadoFrmBean.empleado.idEstado}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoEstados}" var="itemEstado" itemLabel="#{itemEstado.nombreEstado}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="NOMBRE:" for="nombreEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="nombreEmpleado" value="#{empleadoFrmBean.empleado.nombre}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="TIPO CONEXI&Oacute;N:" for="conexionEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="conexionEmpleado" value="#{empleadoFrmBean.empleado.idTipoConexion}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoTipoConexion}" var="itemTipoConexion" itemLabel="#{itemTipoConexion.descripcion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="POSICI&Oacute;N ACTUAL:" for="posActualEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="posActualEmpleado" value="#{empleadoFrmBean.empleado.posicionActual}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionAct" itemLabel="#{itemPosicionAct.nombrePosicion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="FECHA DE CONEXI&Oacute;N:" for="fechaConexionEmpleado"/>                        
+                    <p:calendar id="fechaConexionEmpleado" value="#{empleadoFrmBean.empleado.fechaConexion}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="POSICI&Oacute;N REPORTA:" for="posReportaEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="posReportaEmpleado" value="#{empleadoFrmBean.empleado.posicionReportaA}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionReporta" itemLabel="#{itemPosicionReporta.nombrePosicion}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                    </h:panelGrid>
+
+                    <p:outputLabel value="FECHA DE CARGA:" for="fechaCargaEmpleado"/>                        
+                    <p:calendar id="fechaCargaEmpleado" value="#{empleadoFrmBean.empleado.fechaCarga}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="FECHA INGRESO:" for="fechaIngresoEmpleado"/>                        
+                    <p:calendar id="fechaIngresoEmpleado" value="#{empleadoFrmBean.empleado.fechaIngreso}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" selectOtherMonths="true" showButtonPanel="true" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="FECHA ACTUALIZACI&Oacute;N:" for="fechaActualizacionEmpleado"/>                        
+                    <p:calendar id="fechaActualizacionEmpleado" value="#{empleadoFrmBean.empleado.fechaActualizacion}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="RFC:" for="rfcEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="rfcEmpleado" value="#{empleadoFrmBean.empleado.rfc}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="EDAD:" for="edadEmpleado"/>
+                    <p:spinner id="edadEmpleado" value="#{empleadoFrmBean.empleado.edad}" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}" styleClass="inputNumberFrm"/>
+
+                    <p:outputLabel value="CURP:" for="curpEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="curpEmpleado" value="#{empleadoFrmBean.empleado.curp}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="PROYECTO:" for="proyectoEmpleado"/>
+                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                        <p:selectOneMenu id="proyectoEmpleado" value="#{empleadoFrmBean.empleado.idEmpresaProyecto}" converter="genericConverter" styleClass="comboInput" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}">
+                            <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
+                            <f:selectItems value="#{empleadoFrmBean.catalogoProyectos}" var="itemProyecto" itemLabel="#{itemProyecto.tituloProyecto}" />
+                        </p:selectOneMenu>
+                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                    </h:panelGrid>
+
+                    <p:outputLabel value="NSS:" for="nssEmpleado"/>
+                    <p:inputText onblur="value = value.toUpperCase()" id="nssEmpleado" value="#{empleadoFrmBean.empleado.nss}" styleClass="inputFrm" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+
+                    <p:outputLabel value="FECHA DE NACIMIENTO" for="fechaNacimientoEmpleado"/>                        
+                    <p:calendar id="fechaNacimientoEmpleado" value="#{empleadoFrmBean.empleado.fechaNacimiento}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+                    <f:facet name="footer">
+                        <p:toolbar >
+                            <f:facet name="left">
+                                <p:commandButton id="btnAgregaProspectos" value="Agregar Prospectos" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnAgregaTareas" value="Agregar Tareas" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnRegistroActividad" value="Registro de Actividad" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnEnviar" value="Enviar" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <span class="ui-separator">
+                                    <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                                </span>
+                                <p:commandButton id="btnImprimirReporte" icon="fa fa-fw fa-print" iconPos="left" value="Imprimir" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                            </f:facet>
+                            <f:facet name="right">
+                                <p:commandButton id="btnGuardarEmpleado" value="Guardar" update="formFrmEmpleado,:formPrincipalEmpleado:mensajesEmpleado" icon="fa fa-fw fa-save" iconPos="left" actionListener="#{empleadoFrmBean.guardarElemento}" rendered="#{empleadoFrmBean.permissionToWrite}">
+                                    <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
+                                </p:commandButton>                                
+                            </f:facet>
+                        </p:toolbar>
+                    </f:facet>
+                </p:panelGrid>
+                <p:blockUI block="formFrmEmpleado" trigger="btnGuardarEmpleado">                    
+                    <p style="font-size:14px; color: black;">
+                        Cargando...
+                    </p> 
+                </p:blockUI>                                    
+            </h:form>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo sexo" widgetVar="dialogCatalogoEmpleadoSexo" id="dialogCatalogoEmpleadoSexo" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoSexo(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:sexoEmpleado" listener="#{empleadoFrmBean.init}"/>
+                <ui:include src="/WEB-INF/pages/catalogo/empresa/frm_empresa.xhtml"/>
+            </p:dialog>            
         </ui:composition>
     </h:body>
 </html>

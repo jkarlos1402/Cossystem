@@ -2,7 +2,7 @@ body{
     background-image: url('../imagenes/fondoLogin.jpg'); 
     background-repeat: repeat-y; 
     background-size: 100%; 
-    font-size: 14px;
+    font-size: 12px;
 } 
 
 .dialogLogin{
@@ -19,4 +19,57 @@ body{
 
 .labelLogin{
     font-size: 12px !important;
+}
+
+.panelSinBordes tr,.panelSinBordes td{
+    border-style: none !important; 
+}
+
+.panelSinBordes{
+    width: 100%;
+}
+
+.panelSinPadding td{
+    padding: 0px 6px 0px 2px !important;
+}
+
+.inputFrm{
+    width: 93%;
+    text-transform: uppercase;
+}
+
+.comboInput{
+    width: 84% !important;
+    max-width: 190px !important;  
+    min-width: 190px !important;
+    overflow-x: auto !important;
+}
+
+.panelCombo{
+    margin-left: -4px;
+    max-width: 430px !important;
+}
+
+.tdBotonCatalogo{
+    text-align: right;
+}
+
+.inputFechaFrm input{
+    width: 80%;
+}
+
+.inputNumberFrm input{
+    width: 90%;
+}
+
+.inputNumberFrm{
+    width: 93%;
+}
+
+.ui-dialog-content{
+    font-size: 12px;
+}
+
+.ui-column-filter{
+    display: none !important;
 }

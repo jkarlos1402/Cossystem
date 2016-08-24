@@ -15,17 +15,25 @@
                 <p:tooltip showEffect="fade" hideEffect="fade"/>            
 
                 <p:toolbar id="toolBarEmpleado">
-                    <f:facet name="left">                        
-                        <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="fa fa-fw fa-file-o" title="Nuevo" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>
-                        <p:commandButton id="btnEditarEmpleadoTool" widgetVar="btnEditarEmpleadoTool" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>                        
-                        <p:commandButton id="btnEliminarEmpleadoTool" widgetVar="btnEliminarEmpleadoTool" icon="fa fa-fw fa-trash-o" title="Eliminar" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
-                            <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>
-                        </p:commandButton>                        
-                        <span class="ui-separator">
-                            <span class="ui-icon ui-icon-grip-dotted-vertical"/>
-                        </span>
-                        <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="fa fa-fw fa-eye" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
-                        <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogReporteEmpleado', 'imprimir')}"/>
+                    <f:facet name="left"> 
+                        <h:panelGrid columns="7" >
+                            <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="fa fa-fw fa-file-o" title="Nuevo" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>
+                            <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="fa fa-fw fa-eye" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
+                            <p:commandButton id="btnEditarEmpleadoTool" widgetVar="btnEditarEmpleadoTool" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>                        
+                            <p:commandButton id="btnEliminarEmpleadoTool" widgetVar="btnEliminarEmpleadoTool" icon="fa fa-fw fa-trash-o" title="Eliminar" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
+                                <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>
+                            </p:commandButton>                        
+                            <span class="ui-separator">
+                                <span class="ui-icon ui-icon-grip-dotted-vertical"/>
+                            </span>
+
+                            <p:commandButton id="btnRefreshEmpleadoTool" widgetVar="btnRefreshEmpleadoTool" icon="fa fa-fw fa-refresh" title="Actualizar" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}"/>
+                            <p:lightBox iframe="true" width="1090px" height="600px" iframeTitle="Reporte">                            
+                                <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="dialogFrmEmpleado,mensajesEmpleado">
+                                    <h:outputLink value="#{request.contextPath}/faces/rpt_empleado.xhtml" ></h:outputLink>
+                                </p:commandButton>                                
+                            </p:lightBox>
+                        </h:panelGrid>
                     </f:facet>                    
                 </p:toolbar>                
                 <p:dataTable id="tablaEmpleado" value="#{empleadoTablaBean.elementoCatalogo}" var="empleado" rowKey="#{empleado.idEmpleado}" widgetVar="tablaEmpleado" selectionMode="single" selection="#{empleadoTablaBean.elementoSeleccionado}" style="margin-top: 10px;" paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
@@ -49,13 +57,13 @@
                     <p:ajax event="contextMenu" update="dialogFrmEmpleado" listener="#{empleadoTablaBean.selectElemento}"/> 
                 </p:dataTable>
                 <p:contextMenu for="tablaEmpleado">
-                    <p:menuitem value="Ver" icon="fa fa-fw fa-eye" />
-                    <p:menuitem value="Editar" icon="fa fa-fw fa-edit" update=""/>
-                    <p:menuitem id="bntEliminaEmpleado" value="Eliminar" icon="fa fa-fw fa-trash-o" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
+                    <p:menuitem id="btnDetalleEmpleado" value="Ver" icon="fa fa-fw fa-eye" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
+                    <p:menuitem id="btnEditarEmpleado" value="Editar" icon="fa fa-fw fa-edit" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>
+                    <p:menuitem id="btnEliminarEmpleado" value="Eliminar" icon="fa fa-fw fa-trash-o" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
                         <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
                     </p:menuitem>
                 </p:contextMenu>                
-                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEliminarEmpleadoTool,btnDetalleEmpleadoTool" widgetVar="blockTabla">                   
+                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleadoTool,btnRefreshEmpleadoTool" widgetVar="blockTabla">                   
                     <p style="font-size:14px; color: black;">
                         Cargando...
                     </p> 
@@ -64,13 +72,11 @@
                     <p:commandButton value="S&iacute;" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                     <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                 </p:confirmDialog>
+
             </h:form>
             <p:dialog modal="true" header="#{empleadoTablaBean.nombreDialogFrm}" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
                 <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento}" process="@this"/>
                 <ui:include src="frm_empleado.xhtml"/>                
-            </p:dialog>                      
-            <p:dialog modal="true" header="#{empleadoTablaBean.nombreDialogFrm}" appendTo="@(body)" closeOnEscape="true" id="dialogReporteEmpleado" widgetVar="dialogReporteEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >                
-                <ui:include src="rpt_empleado.xhtml"/>                
             </p:dialog>                      
         </ui:composition>
     </h:body>

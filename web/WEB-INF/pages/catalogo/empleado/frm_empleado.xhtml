@@ -26,8 +26,7 @@
                         <p:selectOneMenu id="contactoEmpleado" value="#{empleadoFrmBean.empleado.idEmpleadoContacto}" converter="genericConverter" styleClass="comboInput" disabled="#{!empleadoFrmBean.permissionToWrite}">
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoContacto}" var="itemContacto" itemLabel="#{itemContacto.nombre}" />
-                        </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        </p:selectOneMenu>                        
                     </h:panelGrid>
 
                     <p:outputLabel value="TELEFONO:" for="telefonoEmpleado"/>
@@ -39,7 +38,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEmpleadoOrigen}" var="itemOrigen" itemLabel="#{itemOrigen.empOrigenDescripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoOrigen').show()" id="btnCatalogoOrigen" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>                       
 
                     <p:outputLabel value="TELEFONO PARTICULAR:" for="telefonoParticularEmpleado"/>
@@ -52,7 +51,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoArea}" />                            
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoArea').show()" id="btnCatalogoArea" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid> 
 
                     <p:outputLabel value="TELEFONO MOVIL:" for="telefonoMovilEmpleado"/>
@@ -65,7 +64,7 @@
                             <f:selectItems value="#{empleadoFrmBean.catalogoDepartamento}" var="itemDepartamento" itemLabel="#{itemDepartamento.depNombre}" />
                             <p:ajax event="itemSelect" update="puestoEmpleado,centroCostosEmpleado" listener="#{empleadoFrmBean.listenerSelectDepartamento()}"/>
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoDepartamento').show()" id="btnCatalogoDepartamento" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </p:panelGrid>
 
                     <p:outputLabel value="DESCRIPCI&Oacute;N GENERAL:" for="descGeneralEmpleado"/>
@@ -77,7 +76,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoUbicacion}" var="itemUbicacion" itemLabel="#{itemUbicacion.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoUbicacion').show()" id="btnCatalogoUbicacion" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD ACTUAL:" for="actividadActualEmpleado"/>
@@ -89,7 +88,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPuestos}" var="itemPuesto" itemLabel="#{itemPuesto.puestoNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPuesto').show()" id="btnCatalogoPuesto" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD FECHA:" for="actividadFechaEmpleado"/>                        
@@ -101,7 +100,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoNivel}" var="itemNivel" itemLabel="#{itemNivel.nivelNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoNivel').show()" id="btnCatalogoNivel" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD:" for="actividadEmpleado"/>
@@ -111,7 +110,7 @@
                             <f:selectItems value="#{empleadoFrmBean.catalogoActividad}" var="itemActividad" itemLabel="#{itemActividad.actividadDescripcion}" />
                             <p:ajax event="itemSelect" update="actividadDetEmpleado" listener="#{empleadoFrmBean.listenerSelectActividad()}"/>
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividad').show()" id="btnCatalogoActividad" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="SEXO:" for="sexoEmpleado"/>
@@ -120,7 +119,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoSexo}" var="itemSexo" itemLabel="#{itemSexo.sexoDescripcion}" />
                         </p:selectOneMenu>                         
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoSexo').show()" icon="fa fa-fw fa-search"/>                                                
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoSexo').show()" id="btnCatalogoSexo" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>                                                
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD DETALLE:" for="actividadDetEmpleado"/>
@@ -129,7 +128,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoActividadDet}" var="itemActividadDet" itemLabel="#{itemActividadDet.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividadDet').show()" id="btnCatalogoActividadDet" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="CENTRO DE COSTOS:" for="centroCostosEmpleado"/>
@@ -138,7 +137,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoCentros}" var="itemCeco" itemLabel="#{itemCeco.centroCostosNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoCentroCostos').show()" id="btnCatalogoCentroCostos" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="PUEDE REASIGNAR:" for="reasignarEmpleado"/>
@@ -150,7 +149,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEstatus}" var="itemEstatus" itemLabel="#{itemEstatus.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstatus').show()" id="btnCatalogoEstatus" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="ESTADO:" for="estadoEmpleado"/>
@@ -159,7 +158,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEstados}" var="itemEstado" itemLabel="#{itemEstado.nombreEstado}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstado').show()" id="btnCatalogoEstado" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="NOMBRE:" for="nombreEmpleado"/>
@@ -171,7 +170,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoTipoConexion}" var="itemTipoConexion" itemLabel="#{itemTipoConexion.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoTipoConexion').show()" id="btnCatalogoTipoConexion" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="POSICI&Oacute;N ACTUAL:" for="posActualEmpleado"/>
@@ -180,7 +179,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionAct" itemLabel="#{itemPosicionAct.nombrePosicion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionActual').show()" id="btnCatalogoPosicionActual" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="FECHA DE CONEXI&Oacute;N:" for="fechaConexionEmpleado"/>                        
@@ -192,7 +191,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionReporta" itemLabel="#{itemPosicionReporta.nombrePosicion}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionReporta').show()" id="btnCatalogoEmpleadoPosicionReporta" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="FECHA DE CARGA:" for="fechaCargaEmpleado"/>                        
@@ -219,7 +218,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoProyectos}" var="itemProyecto" itemLabel="#{itemProyecto.tituloProyecto}" />
                         </p:selectOneMenu>
-                        <p:commandButton immediate="true" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoProyecto').show()" id="btnCatalogoEmpleadoProyecto" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="NSS:" for="nssEmpleado"/>
@@ -227,6 +226,10 @@
 
                     <p:outputLabel value="FECHA DE NACIMIENTO" for="fechaNacimientoEmpleado"/>                        
                     <p:calendar id="fechaNacimientoEmpleado" value="#{empleadoFrmBean.empleado.fechaNacimiento}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+                    
+                    <p:outputLabel value="CONTACTO:" for="isContactoEmpleado"/>
+                    <p:selectBooleanCheckbox id="isContactoEmpleado" value="#{empleadoFrmBean.empleado.contacto}" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+                    
                     <f:facet name="footer">
                         <p:toolbar >
                             <f:facet name="left">
@@ -247,16 +250,91 @@
                         </p:toolbar>
                     </f:facet>
                 </p:panelGrid>
-                <p:blockUI block="formFrmEmpleado" trigger="btnGuardarEmpleado">                    
+                <p:blockUI block="formFrmEmpleado" trigger="btnGuardarEmpleado,btnCatalogoSexo">                    
                     <p style="font-size:14px; color: black;">
                         Cargando...
                     </p> 
                 </p:blockUI>                                    
-            </h:form>            
+            </h:form>                                  
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo origen" widgetVar="dialogCatalogoEmpleadoOrigen" id="dialogCatalogoEmpleadoOrigen" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoEmpleadoOrigen(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:origenEmpleado" listener="#{empleadoFrmBean.init}"/>
+                <!--<ui:include src="/WEB-INF/pages/catalogo/origen/tabla_origen.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo &aacute;rea" widgetVar="dialogCatalogoEmpleadoArea" id="dialogCatalogoEmpleadoArea" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoArea(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:areaEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/area/tabla_area.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo departamento" widgetVar="dialogCatalogoEmpleadoDepartamento" id="dialogCatalogoEmpleadoDepartamento" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoDepartamento(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:departamentoEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/departamento/tabla_departamento.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo ubicaci&oacute;n" widgetVar="dialogCatalogoEmpleadoUbicacion" id="dialogCatalogoEmpleadoUbicacion" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoUbicacion(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:ubicacionEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/ubicacion/tabla_ubicacion.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo puesto" widgetVar="dialogCatalogoEmpleadoPuesto" id="dialogCatalogoEmpleadoPuesto" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoPuestos(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:puestoEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/puesto/tabla_puesto.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo nivel" widgetVar="dialogCatalogoEmpleadoNivel" id="dialogCatalogoEmpleadoNivel" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoNivel(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:nivelEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/nivel/tabla_nivel.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo actividad" widgetVar="dialogCatalogoEmpleadoActividad" id="dialogCatalogoEmpleadoActividad" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoActividad(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:actividadEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/actividad/tabla_actividad.xhtml"/>-->
+            </p:dialog>            
             <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo sexo" widgetVar="dialogCatalogoEmpleadoSexo" id="dialogCatalogoEmpleadoSexo" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
                 <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoSexo(true)}"/>
                 <p:ajax event="close" update=":formFrmEmpleado:sexoEmpleado" listener="#{empleadoFrmBean.init}"/>
-                <ui:include src="/WEB-INF/pages/catalogo/empresa/frm_empresa.xhtml"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/sexo/tabla_sexo.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo actividad detalle" widgetVar="dialogCatalogoEmpleadoActividadDet" id="dialogCatalogoEmpleadoActividadDet" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoActividadDet(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:actividadDetEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/actividadDet/tabla_actividaDet.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo centro de costos" widgetVar="dialogCatalogoEmpleadoCentroCostos" id="dialogCatalogoEmpleadoCentroCostos" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoCentros(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:centroCostosEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/centroCostos/tabla_centroCostos.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo estatus" widgetVar="dialogCatalogoEmpleadoEstatus" id="dialogCatalogoEmpleadoEstatus" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoEstatus(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:estatusEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/estatus/tabla_estatus.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo estado" widgetVar="dialogCatalogoEmpleadoEstado" id="dialogCatalogoEmpleadoEstado" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoEstados(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:estadoEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/estado/tabla_estado.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo tipo conexi&oacute;n" widgetVar="dialogCatalogoEmpleadoTipoConexion" id="dialogCatalogoEmpleadoTipoConexion" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoTipoConexion(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:conexionEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/tipoConexion/tabla_tipoConexion.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo posici&oacute;n" widgetVar="dialogCatalogoEmpleadoPosicionActual" id="dialogCatalogoEmpleadoPosicionActual" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoPosicion(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:posActualEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/posicion/tabla_posicion.xhtml"/>-->
+            </p:dialog>            
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo posici&oacute;n" widgetVar="dialogCatalogoEmpleadoPosicionReporta" id="dialogCatalogoEmpleadoPosicionReporta" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoPosicion(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:posReportaEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/posicion/tabla_posicion.xhtml"/>-->
+            </p:dialog>                        
+            <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo proyecto" widgetVar="dialogCatalogoEmpleadoProyecto" id="dialogCatalogoEmpleadoProyecto" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                <p:ajax event="open" listener="#{empleadoFrmBean.setBndCatalogoProyectos(true)}"/>
+                <p:ajax event="close" update=":formFrmEmpleado:proyectoEmpleado" listener="#{empleadoFrmBean.init}"/>
+<!--                <ui:include src="/WEB-INF/pages/catalogo/proyecto/tabla_proyecto.xhtml"/>-->
             </p:dialog>            
         </ui:composition>
     </h:body>

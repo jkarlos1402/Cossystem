@@ -32,6 +32,7 @@ public class EmpleadoTablaBean implements Serializable {
     //Todos los beans administrados de tabla deben contener los siguientes atributos
     private CatUsuarios usuarioSesion;
     private String nombreDialogFrm = "";
+    private String rutaReporte = "faces/blank.xhtml";
 
     private TblEmpleados elementoNuevo = new TblEmpleados();
     private TblEmpleados elementoSeleccionado;
@@ -98,7 +99,7 @@ public class EmpleadoTablaBean implements Serializable {
                 break;
             case "imprimir":
                 nombreDialogFrm = "Cat\u00E1logo de Empleados - Reporte";
-                RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
+                //RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
         }
     }
@@ -275,4 +276,21 @@ public class EmpleadoTablaBean implements Serializable {
         this.empleadoFrmBean = empleadoFrmBean;
     }
 
+    public String getRutaReporte() {
+        return rutaReporte;
+    }
+
+    public void setRutaReporte(String rutaReporte) {
+        this.rutaReporte = rutaReporte;
+    }
+
+    public void abrioDialogReporte() {
+        System.out.println("abrio reporte");
+        rutaReporte = "/rpt_empleado.xhtml";
+    }
+
+    public void cerroDialogReporte() {
+        System.out.println("cerro reporte");
+        rutaReporte = "/blank.xhtml";
+    }
 }

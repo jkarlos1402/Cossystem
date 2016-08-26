@@ -28,9 +28,9 @@
                             </span>
 
                             <p:commandButton id="btnRefreshEmpleadoTool" widgetVar="btnRefreshEmpleadoTool" icon="fa fa-fw fa-refresh" title="Actualizar" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}"/>
-                            <p:lightBox iframe="true" width="1090px" height="600px" iframeTitle="Reporte">                            
-                                <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="dialogFrmEmpleado,mensajesEmpleado">
-                                    <h:outputLink value="#{request.contextPath}/faces/rpt_empleado.xhtml" ></h:outputLink>
+                            <p:lightBox iframe="true" width="100%" height="100%" iframeTitle="Reporte">                            
+                                <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="mensajesEmpleado">
+                                    <h:outputLink value="#{request.contextPath}/faces/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
                                 </p:commandButton>                                
                             </p:lightBox>
                         </h:panelGrid>

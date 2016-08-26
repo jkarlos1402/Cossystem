@@ -3,22 +3,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:crystal="http://www.businessobjects.com/jsf/crystalreportsviewers"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
     <h:body>
         <ui:composition>            
-            <h:form>
+            <h:form>                
                 <crystal:reportPageViewer viewerName="Reporte empleado"  
-                                          reportSource="#{empleadoReportBean.reporte}"                                         
+                                          reportSource="#{reportBean.obtieneReporte('RPT_Cat_CP_ESTADO')}"                                         
                                           enablePageToGrow="false" height="540"  
                                           zoomPercentage="100"  
                                           displayToolbarLogo="false"
                                           displayToolbarPrintButton="true"
                                           displayPage="true"
                                           displayToolbarRefreshButton="true"
-                                          />
+                                          displayToolbarToggleTreeButton="false"
+                                           />
             </h:form>
         </ui:composition>
     </h:body>

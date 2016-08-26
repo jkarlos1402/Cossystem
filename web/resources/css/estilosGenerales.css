@@ -73,3 +73,12 @@ body{
 .ui-column-filter{
     display: none !important;
 }
+
+.ui-lightbox{
+    width: 100%;
+    height: 100%;
+}
+
+.ui-lightbox-content-wrapper{
+    height: 95%;
+}

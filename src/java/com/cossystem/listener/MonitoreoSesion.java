@@ -23,9 +23,9 @@ public class MonitoreoSesion implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        GenericDAO genericDAO = (GenericDAO)se.getSession().getAttribute("genericdao_user");
-        if(genericDAO != null){
+        GenericDAO genericDAO = (GenericDAO) se.getSession().getAttribute("genericdao_user");
+        if (genericDAO != null) {
             genericDAO.closeDAO();
-        }        
+        }
     }
 }

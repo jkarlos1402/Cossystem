@@ -38,7 +38,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEmpleadoOrigen}" var="itemOrigen" itemLabel="#{itemOrigen.empOrigenDescripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoOrigen').show()" id="btnCatalogoOrigen" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoOrigen').show()" id="btnCatalogoOrigen" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>                       
 
                     <p:outputLabel value="TELEFONO PARTICULAR:" for="telefonoParticularEmpleado"/>
@@ -51,7 +51,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoArea}" />                            
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoArea').show()" id="btnCatalogoArea" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoArea').show()" id="btnCatalogoArea" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid> 
 
                     <p:outputLabel value="TELEFONO MOVIL:" for="telefonoMovilEmpleado"/>
@@ -64,7 +64,7 @@
                             <f:selectItems value="#{empleadoFrmBean.catalogoDepartamento}" var="itemDepartamento" itemLabel="#{itemDepartamento.depNombre}" />
                             <p:ajax event="itemSelect" update="puestoEmpleado,centroCostosEmpleado" listener="#{empleadoFrmBean.listenerSelectDepartamento()}"/>
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoDepartamento').show()" id="btnCatalogoDepartamento" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoDepartamento').show()" id="btnCatalogoDepartamento" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </p:panelGrid>
 
                     <p:outputLabel value="DESCRIPCI&Oacute;N GENERAL:" for="descGeneralEmpleado"/>
@@ -76,7 +76,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoUbicacion}" var="itemUbicacion" itemLabel="#{itemUbicacion.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoUbicacion').show()" id="btnCatalogoUbicacion" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoUbicacion').show()" id="btnCatalogoUbicacion" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD ACTUAL:" for="actividadActualEmpleado"/>
@@ -88,11 +88,11 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPuestos}" var="itemPuesto" itemLabel="#{itemPuesto.puestoNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPuesto').show()" id="btnCatalogoPuesto" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPuesto').show()" id="btnCatalogoPuesto" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD FECHA:" for="actividadFechaEmpleado"/>                        
-                    <p:calendar id="actividadFechaEmpleado" value="#{empleadoFrmBean.empleado.actividadFecha}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+                    <p:calendar id="actividadFechaEmpleado" value="#{empleadoFrmBean.empleado.actividadFecha}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" timeZone="UTC" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
 
                     <p:outputLabel value="NIVEL:" for="nivelEmpleado"/>
                     <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
@@ -100,7 +100,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoNivel}" var="itemNivel" itemLabel="#{itemNivel.nivelNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoNivel').show()" id="btnCatalogoNivel" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoNivel').show()" id="btnCatalogoNivel" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD:" for="actividadEmpleado"/>
@@ -110,7 +110,7 @@
                             <f:selectItems value="#{empleadoFrmBean.catalogoActividad}" var="itemActividad" itemLabel="#{itemActividad.actividadDescripcion}" />
                             <p:ajax event="itemSelect" update="actividadDetEmpleado" listener="#{empleadoFrmBean.listenerSelectActividad()}"/>
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividad').show()" id="btnCatalogoActividad" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividad').show()" id="btnCatalogoActividad" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
                     </h:panelGrid>
 
                     <p:outputLabel value="SEXO:" for="sexoEmpleado"/>
@@ -119,7 +119,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoSexo}" var="itemSexo" itemLabel="#{itemSexo.sexoDescripcion}" />
                         </p:selectOneMenu>                         
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoSexo').show()" id="btnCatalogoSexo" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>                                                
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoSexo').show()" id="btnCatalogoSexo" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>                                                
                     </h:panelGrid>
 
                     <p:outputLabel value="ACTIVIDAD DETALLE:" for="actividadDetEmpleado"/>
@@ -128,7 +128,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoActividadDet}" var="itemActividadDet" itemLabel="#{itemActividadDet.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividadDet').show()" id="btnCatalogoActividadDet" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoActividadDet').show()" id="btnCatalogoActividadDet" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="CENTRO DE COSTOS:" for="centroCostosEmpleado"/>
@@ -137,7 +137,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoCentros}" var="itemCeco" itemLabel="#{itemCeco.centroCostosNombre}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoCentroCostos').show()" id="btnCatalogoCentroCostos" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoCentroCostos').show()" id="btnCatalogoCentroCostos" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="PUEDE REASIGNAR:" for="reasignarEmpleado"/>
@@ -149,7 +149,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEstatus}" var="itemEstatus" itemLabel="#{itemEstatus.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstatus').show()" id="btnCatalogoEstatus" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstatus').show()" id="btnCatalogoEstatus" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="ESTADO:" for="estadoEmpleado"/>
@@ -158,7 +158,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoEstados}" var="itemEstado" itemLabel="#{itemEstado.nombreEstado}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstado').show()" id="btnCatalogoEstado" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoEstado').show()" id="btnCatalogoEstado" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="NOMBRE:" for="nombreEmpleado"/>
@@ -170,7 +170,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoTipoConexion}" var="itemTipoConexion" itemLabel="#{itemTipoConexion.descripcion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoTipoConexion').show()" id="btnCatalogoTipoConexion" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoTipoConexion').show()" id="btnCatalogoTipoConexion" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="POSICI&Oacute;N ACTUAL:" for="posActualEmpleado"/>
@@ -179,7 +179,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionAct" itemLabel="#{itemPosicionAct.nombrePosicion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionActual').show()" id="btnCatalogoPosicionActual" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionActual').show()" id="btnCatalogoPosicionActual" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="FECHA DE CONEXI&Oacute;N:" for="fechaConexionEmpleado"/>                        
@@ -191,14 +191,14 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoPosicion}" var="itemPosicionReporta" itemLabel="#{itemPosicionReporta.nombrePosicion}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionReporta').show()" id="btnCatalogoEmpleadoPosicionReporta" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoPosicionReporta').show()" id="btnCatalogoEmpleadoPosicionReporta" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="FECHA DE CARGA:" for="fechaCargaEmpleado"/>                        
                     <p:calendar id="fechaCargaEmpleado" value="#{empleadoFrmBean.empleado.fechaCarga}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
 
                     <p:outputLabel value="FECHA INGRESO:" for="fechaIngresoEmpleado"/>                        
-                    <p:calendar id="fechaIngresoEmpleado" value="#{empleadoFrmBean.empleado.fechaIngreso}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" selectOtherMonths="true" showButtonPanel="true" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
+                    <p:calendar id="fechaIngresoEmpleado" value="#{empleadoFrmBean.empleado.fechaIngreso}" showOn="button" styleClass="inputFechaFrm" timeZone="America/Mexico_City" locale="es" navigator="true"  selectOtherMonths="true" showButtonPanel="true" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
 
                     <p:outputLabel value="FECHA ACTUALIZACI&Oacute;N:" for="fechaActualizacionEmpleado"/>                        
                     <p:calendar id="fechaActualizacionEmpleado" value="#{empleadoFrmBean.empleado.fechaActualizacion}" showOn="button" styleClass="inputFechaFrm" pattern="dd/MM/yyyy" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
@@ -218,7 +218,7 @@
                             <f:selectItem itemValue="" itemLabel="SELECCIONE"/>                                
                             <f:selectItems value="#{empleadoFrmBean.catalogoProyectos}" var="itemProyecto" itemLabel="#{itemProyecto.tituloProyecto}" />
                         </p:selectOneMenu>
-                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoProyecto').show()" id="btnCatalogoEmpleadoProyecto" icon="fa fa-fw fa-search" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                        <p:commandButton onclick="PF('dialogCatalogoEmpleadoProyecto').show()" id="btnCatalogoEmpleadoProyecto" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}"/>
                     </h:panelGrid>
 
                     <p:outputLabel value="NSS:" for="nssEmpleado"/>

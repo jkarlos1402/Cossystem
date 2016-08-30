@@ -71,7 +71,7 @@ body{
 }
 
 .ui-column-filter{
-    display: none !important;
+    /*display: none !important;*/
 }
 
 .ui-lightbox{
@@ -81,4 +81,20 @@ body{
 
 .ui-lightbox-content-wrapper{
     height: 95%;
+}
+
+.iconoAmpliar{
+    background-image: url('../imagenes/buscar-buscar-ampliar-icono.png') !important;
+}
+
+.iconoVer{
+    background-image: url('../imagenes/buscar-buscar-ampliar-icono.png') !important;
+}
+
+.iconoNuevo{
+    background-image: url('../imagenes/nuevo-icono.png') !important;
+}
+
+.iconoDescargar{
+    background-image: url('../imagenes/descargar-icono.png') !important;
 }

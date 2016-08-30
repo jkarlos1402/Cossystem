@@ -9,8 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -51,7 +49,7 @@ public class ReportBean implements Serializable {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             HttpSession httpSession = (HttpSession) context.getExternalContext().getSession(false);
-            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
             String contextPathResources = servletContext.getRealPath("");
             IReportSource reportSource;
             Properties propiedadesIniciales = new Properties();
@@ -102,8 +100,7 @@ public class ReportBean implements Serializable {
                 reporte = reportSource;
             }
 
-        } catch (ReportSDKException | IOException | NullPointerException ex) {
-            System.out.println("hubo un error");
+        } catch (ReportSDKException | IOException | NullPointerException ex) {            
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
         }
         if(message != null){

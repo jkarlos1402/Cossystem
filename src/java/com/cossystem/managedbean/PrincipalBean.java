@@ -21,7 +21,6 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 public class PrincipalBean implements Serializable{
 
-//    private GenericDAO genericDAO;
     private CatUsuarios usuarioSesion;
 
     /**
@@ -30,16 +29,7 @@ public class PrincipalBean implements Serializable{
     public PrincipalBean() {
         HttpSession httpSession = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         usuarioSesion = (CatUsuarios) httpSession.getAttribute("session_user");
-//        genericDAO = (GenericDAO) httpSession.getAttribute("genericdao_user");
     }
-
-//    public GenericDAO getGenericDAO() {
-//        return genericDAO;
-//    }
-//
-//    public void setGenericDAO(GenericDAO genericDAO) {
-//        this.genericDAO = genericDAO;
-//    }
 
     public CatUsuarios getUsuarioSesion() {
         return usuarioSesion;

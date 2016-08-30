@@ -3,9 +3,16 @@ package com.cossystem.managedbean.empleado;
 import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
+import com.cossystem.core.pojos.catalogos.CatCPESTADO;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
+import com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
+import com.cossystem.core.util.ManagerXLSX;
 import com.cossystem.managedbean.PrincipalBean;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,13 +20,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -33,6 +46,7 @@ public class EmpleadoTablaBean implements Serializable {
     private CatUsuarios usuarioSesion;
     private String nombreDialogFrm = "";
     private String rutaReporte = "faces/blank.xhtml";
+    private StreamedContent fileExcel;
 
     private TblEmpleados elementoNuevo = new TblEmpleados();
     private TblEmpleados elementoSeleccionado;
@@ -123,51 +137,6 @@ public class EmpleadoTablaBean implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
-//
-//    public Serializable copiaNotaNuevaANotaSeleccionada() {
-//        Field[] campos = notaNueva.getClass().getDeclaredFields();
-//        for (Field campo : campos) {
-//            try {
-//                if ((Modifier.PRIVATE + Modifier.STATIC + Modifier.FINAL) != campo.getModifiers()) {
-//                    campo.setAccessible(true);
-//                    campo.set(notaSeleccionada, campo.get(notaNueva));
-//                }
-//            } catch (IllegalArgumentException ex) {
-//                Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IllegalAccessException ex) {
-//                Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//        return notaSeleccionada;
-//    }
-//
-//    public void guardaNota() {
-//        FacesMessage message;
-//        GenericDAO genericDAO = null;
-//        try {
-//            genericDAO = new GenericDAO();
-//            notaNueva.setPais(paisSelected.getClave());
-//            genericDAO.saveOrUpdate(notaSeleccionada != null ? copiaNotaNuevaANotaSeleccionada() : notaNueva);
-//            RequestContext.getCurrentInstance().execute("PF('dialogFormOrderNotas').hide()");
-//            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "The record has been saved");
-//        } catch (IllegalArgumentException ex) {
-//            Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-//        } catch (DataBaseException ex) {
-//            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-//            Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (DAOException ex) {
-//            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-//            Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally {
-//            refreshNotas();
-//            if (genericDAO != null) {
-//                genericDAO.closeDAO();
-//            }
-//        }
-//        FacesContext.getCurrentInstance().addMessage(null, message);
-//    }
-//
 
     public void selectElemento() {
         FacesMessage message = null;
@@ -197,7 +166,6 @@ public class EmpleadoTablaBean implements Serializable {
     }
 
     public void cerroDialogElemento() {
-        System.out.println("se limpiara");
         RequestContext.getCurrentInstance().reset("formFrmEmpleado");
     }
 
@@ -222,6 +190,14 @@ public class EmpleadoTablaBean implements Serializable {
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenci\u00F3n", "Ning\u00FAn elemento seleccionado");
         }
         FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    public String generaExcelElemento() throws DAOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+        String contextPathResources = servletContext.getRealPath("");
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, null, contextPathResources + File.separator + "tempExcel", (List<TblConfiguracionCossAdmin>) session.getAttribute("configuracionCosAdmin"));
     }
 
     public TblEmpleados getElementoNuevo() {
@@ -284,13 +260,31 @@ public class EmpleadoTablaBean implements Serializable {
         this.rutaReporte = rutaReporte;
     }
 
-    public void abrioDialogReporte() {
-        System.out.println("abrio reporte");
-        rutaReporte = "/rpt_empleado.xhtml";
+    public StreamedContent getFileExcel() {
+        FacesMessage message = null;
+        String nombreArchivoExcel = null;
+        InputStream stream = null;
+        try {
+            nombreArchivoExcel = generaExcelElemento();
+            System.out.println("nombre archivo generado: " + nombreArchivoExcel);
+            stream = new FileInputStream(nombreArchivoExcel);
+            System.out.println("stream: " + stream.available());
+            fileExcel = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "catalogoEmpleado.xlsx");
+        } catch (DAOException ex) {
+            System.out.println("error:" + ex.getMessage());
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error al descargar archivo", ex.getMessage());
+        } catch (IOException ex) {
+            System.out.println("error:" + ex.getMessage());
+            Logger.getLogger(EmpleadoTablaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (message != null) {
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+        return fileExcel;
     }
 
-    public void cerroDialogReporte() {
-        System.out.println("cerro reporte");
-        rutaReporte = "/blank.xhtml";
+    public void setFileExcel(StreamedContent fileExcel) {
+        this.fileExcel = fileExcel;
     }
+
 }

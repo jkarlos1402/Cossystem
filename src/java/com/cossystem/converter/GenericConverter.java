@@ -19,7 +19,10 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.servlet.http.HttpSession;
 import org.primefaces.component.picklist.PickList;
 import org.primefaces.model.DualListModel;
@@ -131,11 +134,11 @@ public class GenericConverter implements Converter {
                                             }
                                         }
                                         if (valorObtenido.equals(value)) {
-                                            if (elemento.getClass().getName().contains("_$$")) {
+//                                            if (elemento.getClass().getName().contains("_$$")) {
 //                                                objetoResult = clase.newInstance();
 //                                                for (Field campoAux : properties) {
 //                                                    campoAux.setAccessible(true);
-//                                                    if (campoAux.isAnnotationPresent(Column.class) || campoAux.isAnnotationPresent(ManyToOne.class) || campoAux.isAnnotationPresent(OneToMany.class)) {
+//                                                    if (campoAux.isAnnotationPresent(Column.class) || campoAux.isAnnotationPresent(ManyToOne.class)) {
 //                                                        for (Method metodo : metodos) {
 //                                                            if (metodo.getName().equalsIgnoreCase("get" + campoAux.getName())) {
 //                                                                campoAux.set(objetoResult, metodo.invoke(elemento));
@@ -143,14 +146,14 @@ public class GenericConverter implements Converter {
 //                                                            }
 //                                                        }
 //                                                    }
-//                                                }  
-//                                                System.out.println("clasegeneric: " + clase.getName());
-                                                GenericDAO genericDAO = (GenericDAO) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getAttribute("genericdao_user");
-                                                genericDAO.renovarDAO();
-                                                objetoResult = genericDAO.findById(clase, new Integer(valorObtenido));
-//                                                System.out.println("se retorna objeto de generic: " + objetoResult + " con clase: " + objetoResult.getClass().getName());
-                                                return objetoResult;
-                                            }
+//                                                }
+////                                                System.out.println("clasegeneric: " + clase.getName());
+////                                                GenericDAO genericDAO = (GenericDAO) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getAttribute("genericdao_user");
+////                                                genericDAO.renovarDAO();
+////                                                objetoResult = genericDAO.findById(clase, new Integer(valorObtenido));
+////                                                System.out.println("se retorna objeto de generic: " + objetoResult + " con clase: " + objetoResult.getClass().getName());
+//                                                return objetoResult;
+//                                            }
 //                                            System.out.println("se retorna objeto: " + elemento + " con clase: " + elemento.getClass().getName());
                                             return elemento;
                                         }
@@ -160,10 +163,11 @@ public class GenericConverter implements Converter {
                         } catch (IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException ex) {
                             ex.printStackTrace();
                             return null;
-                        } catch (DAOException ex) {
+                        }
+                        /*catch (DAOException ex) {
                             Logger.getLogger(GenericConverter.class.getName()).log(Level.SEVERE, null, ex);
                             return null;
-                        }
+                        }*/
                     } else {
                         return null;
                     }

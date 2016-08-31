@@ -11,12 +11,12 @@
     <h:body>
         <ui:composition>              
             <h:form id="formPrincipalEmpleado">
-                <p:growl showDetail="true" id="mensajesEmpleado"/>            
+                <p:growl showDetail="true" id="mensajesEmpleado" widgetVar="mensajesEmpleado"/>            
                 <p:tooltip showEffect="fade" hideEffect="fade"/>            
 
                 <p:toolbar id="toolBarEmpleado">
                     <f:facet name="left"> 
-                        <h:panelGrid columns="8" >
+                        <h:panelGrid columns="10" >
                             <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="iconoNuevo" title="Nuevo" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>
                             <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="iconoVer" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
                             <p:commandButton id="btnEditarEmpleadoTool" widgetVar="btnEditarEmpleadoTool" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>                        
@@ -33,7 +33,12 @@
                                     <h:outputLink value="#{request.contextPath}/faces/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
                                 </p:commandButton>                                
                             </p:lightBox>
-                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel" update="tablaEmpleado,mensajesEmpleado">
+                            <p:lightBox iframe="true" width="100%" height="100%" iframeTitle="Reporte">                            
+                                <p:commandButton id="btnReporteEmpleadoTodoTool" widgetVar="btnReporteEmpleadoTodoTool" icon="fa fa-fw fa-print" title="Imprimir todo" update="mensajesEmpleado">
+                                    <h:outputLink value="#{request.contextPath}/faces/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
+                                </p:commandButton>                                
+                            </p:lightBox>
+                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel" update="tablaEmpleado,mensajesEmpleado" onclick="muestraMensajeDescargaExcel('mensajesEmpleado');">
                                 <p:fileDownload value="#{empleadoTablaBean.fileExcel}"/>
                             </p:commandButton> 
                         </h:panelGrid>
@@ -66,7 +71,7 @@
                         <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
                     </p:menuitem>
                 </p:contextMenu>                
-                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleadoTool,btnRefreshEmpleadoTool" widgetVar="blockTabla">                   
+                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleado,btnRefreshEmpleadoTool,btnDescExcelEmpleadoTool" widgetVar="blockTabla">                   
                     <p style="font-size:14px; color: black;">
                         Cargando...
                     </p> 

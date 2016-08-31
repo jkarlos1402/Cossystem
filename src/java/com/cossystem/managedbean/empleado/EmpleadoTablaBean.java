@@ -3,7 +3,6 @@ package com.cossystem.managedbean.empleado;
 import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
-import com.cossystem.core.pojos.catalogos.CatCPESTADO;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
 import com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
@@ -18,6 +17,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -192,12 +193,12 @@ public class EmpleadoTablaBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
-    public String generaExcelElemento() throws DAOException {
+    public String generaExcelElemento() throws DAOException, DataBaseException {
         FacesContext context = FacesContext.getCurrentInstance();
         ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
         String contextPathResources = servletContext.getRealPath("");
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, null, contextPathResources + File.separator + "tempExcel", (List<TblConfiguracionCossAdmin>) session.getAttribute("configuracionCosAdmin"));
+        return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, null, contextPathResources + File.separator + "tempExcel");
     }
 
     public TblEmpleados getElementoNuevo() {
@@ -266,16 +267,13 @@ public class EmpleadoTablaBean implements Serializable {
         InputStream stream = null;
         try {
             nombreArchivoExcel = generaExcelElemento();
-            System.out.println("nombre archivo generado: " + nombreArchivoExcel);
             stream = new FileInputStream(nombreArchivoExcel);
-            System.out.println("stream: " + stream.available());
-            fileExcel = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "catalogoEmpleado.xlsx");
-        } catch (DAOException ex) {
+            Calendar fechaHoy = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+            fileExcel = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "catalogoEmpleados" + sdf.format(fechaHoy.getTime()) + ".xlsx");
+        } catch (DAOException | IOException | DataBaseException ex) {
             System.out.println("error:" + ex.getMessage());
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error al descargar archivo", ex.getMessage());
-        } catch (IOException ex) {
-            System.out.println("error:" + ex.getMessage());
-            Logger.getLogger(EmpleadoTablaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (message != null) {
             FacesContext.getCurrentInstance().addMessage(null, message);

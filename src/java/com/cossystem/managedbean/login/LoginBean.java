@@ -152,8 +152,7 @@ public class LoginBean implements Serializable {
                 usuarioSesion.setFechaInicial(new Date());
                 genericDAO.saveOrUpdate(usuarioSesion);
                 httpSession.setAttribute("session_user", usuarioSesion);
-//                httpSession.setAttribute("genericdao_user", new GenericDAO());
-                System.out.println("Ya entro Autorizado");
+//                httpSession.setAttribute("genericdao_user", new GenericDAO());                
                 return "correct";
             } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error: User or password incorrect", ""));

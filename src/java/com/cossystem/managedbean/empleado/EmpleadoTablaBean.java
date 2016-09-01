@@ -20,6 +20,7 @@ import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -46,8 +48,9 @@ public class EmpleadoTablaBean implements Serializable {
     //Todos los beans administrados de tabla deben contener los siguientes atributos
     private CatUsuarios usuarioSesion;
     private String nombreDialogFrm = "";
-    private String rutaReporte = "faces/blank.xhtml";
+    private String rutaReporte = "blank.xhtml";
     private StreamedContent fileExcel;
+    private String nombreArchivo;
 
     private TblEmpleados elementoNuevo = new TblEmpleados();
     private TblEmpleados elementoSeleccionado;
@@ -62,8 +65,7 @@ public class EmpleadoTablaBean implements Serializable {
     /**
      * Creates a new instance of AlertasBean
      */
-    public EmpleadoTablaBean() {
-
+    public EmpleadoTablaBean() {        
     }
 
     @PostConstruct
@@ -116,6 +118,10 @@ public class EmpleadoTablaBean implements Serializable {
                 nombreDialogFrm = "Cat\u00E1logo de Empleados - Reporte";
                 //RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
+            case "cargaExcel":
+                nombreDialogFrm = "Cat\u00E1logo de Empleados - Carga de excel";
+                RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
+                break;
         }
     }
 
@@ -166,8 +172,8 @@ public class EmpleadoTablaBean implements Serializable {
         }
     }
 
-    public void cerroDialogElemento() {
-        RequestContext.getCurrentInstance().reset("formFrmEmpleado");
+    public void cerroDialogElemento(String nombreFormulario) {
+        RequestContext.getCurrentInstance().reset(nombreFormulario);
     }
 
     public void eliminaElemento(final String nombreTabla) {
@@ -198,7 +204,9 @@ public class EmpleadoTablaBean implements Serializable {
         ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
         String contextPathResources = servletContext.getRealPath("");
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
-        return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, null, contextPathResources + File.separator + "tempExcel");
+        Map filtros = new TreeMap();
+        filtros.put("idEmpresa", usuarioSesion.getIdEmpresa());
+        return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, filtros, contextPathResources + File.separator + "tempExcel");
     }
 
     public TblEmpleados getElementoNuevo() {
@@ -270,9 +278,9 @@ public class EmpleadoTablaBean implements Serializable {
             stream = new FileInputStream(nombreArchivoExcel);
             Calendar fechaHoy = Calendar.getInstance();
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+            nombreArchivo = nombreArchivoExcel;
             fileExcel = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "catalogoEmpleados" + sdf.format(fechaHoy.getTime()) + ".xlsx");
-        } catch (DAOException | IOException | DataBaseException ex) {
-            System.out.println("error:" + ex.getMessage());
+        } catch (IOException | DAOException | DataBaseException ex) {            
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error al descargar archivo", ex.getMessage());
         }
         if (message != null) {
@@ -285,4 +293,19 @@ public class EmpleadoTablaBean implements Serializable {
         this.fileExcel = fileExcel;
     }
 
+    public void borraTempExcel() {        
+        File file = new File(nombreArchivo);        
+        if(file.isFile()){
+            file.delete();
+        }
+    }
+    
+    public void handleFileExcel(FileUploadEvent event){
+        System.out.println("se subio archivo");
+        try {
+            ManagerXLSX.cargaCatalogoExcel(TblEmpleados.class, event.getFile().getInputstream());
+        } catch (IOException ex) {
+            Logger.getLogger(EmpleadoTablaBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

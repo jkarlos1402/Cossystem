@@ -1,12 +1,12 @@
 body{ 
-    background-image: url('../imagenes/fondoLogin.jpg'); 
+    background-image: url('../../imagenes/fondoLogin.jpg'); 
     background-repeat: repeat-y; 
     background-size: 100%; 
     font-size: 12px;
 } 
 
 .dialogLogin{
-    background-image: url('../imagenes/LOGO_1.BMP');
+    background-image: url('../../imagenes/LOGO_1.BMP');
     background-repeat: no-repeat;
     background-size: 53%;
     background-position: bottom right;
@@ -84,17 +84,47 @@ body{
 }
 
 .iconoAmpliar{
-    background-image: url('../imagenes/buscar-buscar-ampliar-icono.png') !important;
+    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;
+    width: 32px;
+    height: 32px;
 }
 
 .iconoVer{
-    background-image: url('../imagenes/buscar-buscar-ampliar-icono.png') !important;
+    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;
+    width: 32px;
+    height: 32px;
 }
 
 .iconoNuevo{
-    background-image: url('../imagenes/nuevo-icono.png') !important;
+    background-image: url('../../imagenes/nuevo-icono.png') !important;
+    width: 32px;
+    height: 32px;
 }
 
 .iconoDescargar{
-    background-image: url('../imagenes/descargar-icono.png') !important;
+    background-image: url('../../imagenes/descargar-icono.png') !important;
+    width: 32px;
+    height: 32px;
 }
+
+.iconoCargar{
+    background-image: url('../../imagenes/subir-icono.png') !important;
+    width: 32px;
+    height: 32px;
+}
+
+/*.ui-button-icon-only{
+    width: 3em !important;
+    height: 2.5em !important;
+}
+
+.ui-button-icon-only .ui-icon{
+    left: 50% !important;
+    margin-left: -13px !important;
+}
+
+.ui-button-icon-only .ui-icon, .ui-button-text-icon-left .ui-icon, .ui-button-text-icon-right .ui-icon{
+    position: absolute !important;
+    top: 50% !important;
+    margin-top: -15px !important;
+}*/

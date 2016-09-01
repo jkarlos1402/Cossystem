@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author TMXIDSJPINAM
  */
-@WebFilter(filterName = "AccessFilter", urlPatterns = {"/faces/login.xhtml", "/faces/home.xhtml"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE})
+@WebFilter(filterName = "AccessFilter", urlPatterns = {"/login.xhtml", "/home.xhtml"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE})
 public class AccessFilter implements Filter {  
 
     /**

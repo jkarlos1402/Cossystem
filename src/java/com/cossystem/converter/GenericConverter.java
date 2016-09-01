@@ -1,12 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.cossystem.converter;
 
-import com.cossystem.core.dao.GenericDAO;
-import com.cossystem.core.exception.DAOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -19,11 +12,7 @@ import javax.faces.component.UISelectItems;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.servlet.http.HttpSession;
 import org.primefaces.component.picklist.PickList;
 import org.primefaces.model.DualListModel;
 
@@ -32,19 +21,17 @@ import org.primefaces.model.DualListModel;
  * anotación @Id, el componente debe contener un f:selectItems, de lo contrario
  * siempre regresara nulo
  *
- * @author TMXIDSJPINAM
+ * @author 
  */
 @FacesConverter("genericConverter")
 public class GenericConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-//        System.out.println("entro a obtener como object " + value);
         Field[] properties;
         Method[] metodos;
         Class clase;
-        String valorObtenido = "";
-        Object objetoResult;
+        String valorObtenido = "";        
         if (value != null && !"".equals(value)) {
             if (component.getClass().getName().equalsIgnoreCase(PickList.class.getName())) {
                 DualListModel<Serializable> model = (DualListModel<Serializable>) ((PickList) component).getValue();
@@ -103,7 +90,6 @@ public class GenericConverter implements Converter {
                                         }
                                     }
                                     if (valorObtenido.equals(value)) {
-//                                        System.out.println("se retornara elemento con id " + valorObtenido);
                                         return elemento;
                                     }
                                 }
@@ -134,47 +120,20 @@ public class GenericConverter implements Converter {
                                             }
                                         }
                                         if (valorObtenido.equals(value)) {
-//                                            if (elemento.getClass().getName().contains("_$$")) {
-//                                                objetoResult = clase.newInstance();
-//                                                for (Field campoAux : properties) {
-//                                                    campoAux.setAccessible(true);
-//                                                    if (campoAux.isAnnotationPresent(Column.class) || campoAux.isAnnotationPresent(ManyToOne.class)) {
-//                                                        for (Method metodo : metodos) {
-//                                                            if (metodo.getName().equalsIgnoreCase("get" + campoAux.getName())) {
-//                                                                campoAux.set(objetoResult, metodo.invoke(elemento));
-//                                                                break;
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }
-////                                                System.out.println("clasegeneric: " + clase.getName());
-////                                                GenericDAO genericDAO = (GenericDAO) ((HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false)).getAttribute("genericdao_user");
-////                                                genericDAO.renovarDAO();
-////                                                objetoResult = genericDAO.findById(clase, new Integer(valorObtenido));
-////                                                System.out.println("se retorna objeto de generic: " + objetoResult + " con clase: " + objetoResult.getClass().getName());
-//                                                return objetoResult;
-//                                            }
-//                                            System.out.println("se retorna objeto: " + elemento + " con clase: " + elemento.getClass().getName());
                                             return elemento;
                                         }
                                     }
                                 }
                             }
-                        } catch (IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException ex) {
-                            ex.printStackTrace();
+                        } catch (IllegalAccessException | ClassNotFoundException | IllegalArgumentException | InvocationTargetException ex) {                            
                             return null;
-                        }
-                        /*catch (DAOException ex) {
-                            Logger.getLogger(GenericConverter.class.getName()).log(Level.SEVERE, null, ex);
-                            return null;
-                        }*/
+                        }                        
                     } else {
                         return null;
                     }
                 }
             }
         }
-//        System.out.println("llego al final");
         return null;
     }
 
@@ -189,7 +148,6 @@ public class GenericConverter implements Converter {
                 if (property.isAnnotationPresent(Id.class)) {
                     for (Method metodo : metodos) {
                         if (metodo.getName().equalsIgnoreCase("get" + property.getName())) {
-//                            System.out.println("se retornara string " + metodo.invoke(value).toString());
                             return metodo.invoke(value).toString();
                         }
                     }
@@ -201,5 +159,4 @@ public class GenericConverter implements Converter {
         }
         return null;
     }
-
 }

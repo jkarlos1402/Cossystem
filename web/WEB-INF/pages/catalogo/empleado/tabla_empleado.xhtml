@@ -16,7 +16,7 @@
 
                 <p:toolbar id="toolBarEmpleado">
                     <f:facet name="left"> 
-                        <h:panelGrid columns="10" >
+                        <h:panelGrid columns="12" >
                             <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="iconoNuevo" title="Nuevo" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>
                             <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="iconoVer" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
                             <p:commandButton id="btnEditarEmpleadoTool" widgetVar="btnEditarEmpleadoTool" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>                        
@@ -30,18 +30,21 @@
                             <p:commandButton id="btnRefreshEmpleadoTool" widgetVar="btnRefreshEmpleadoTool" icon="fa fa-fw fa-refresh" title="Actualizar" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}"/>
                             <p:lightBox iframe="true" width="100%" height="100%" iframeTitle="Reporte">                            
                                 <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="mensajesEmpleado">
-                                    <h:outputLink value="#{request.contextPath}/faces/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
+                                    <h:outputLink value="#{request.contextPath}/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
                                 </p:commandButton>                                
                             </p:lightBox>
                             <p:lightBox iframe="true" width="100%" height="100%" iframeTitle="Reporte">                            
                                 <p:commandButton id="btnReporteEmpleadoTodoTool" widgetVar="btnReporteEmpleadoTodoTool" icon="fa fa-fw fa-print" title="Imprimir todo" update="mensajesEmpleado">
-                                    <h:outputLink value="#{request.contextPath}/faces/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
+                                    <h:outputLink value="#{request.contextPath}/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
                                 </p:commandButton>                                
                             </p:lightBox>
-                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel" update="tablaEmpleado,mensajesEmpleado" onclick="muestraMensajeDescargaExcel('mensajesEmpleado');">
-                                <p:fileDownload value="#{empleadoTablaBean.fileExcel}"/>
-                            </p:commandButton> 
+                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel"  onclick="PrimeFaces.monitorDownload(showBlockDescargaExcel, hideBlockDescargaExcel);muestraMensajeDescargaExcel('mensajesEmpleado');">
+                                <p:fileDownload value="#{empleadoTablaBean.fileExcel}" contentDisposition="attachment"/>
+                            </p:commandButton>                             
+                            <p:commandButton id="btnSubirExcelEmpleadoTool" widgetVar="btnSubirExcelEmpleadoTool" icon="iconoCargar" title="Cargar excel" update="dialogCargaExcelEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogCargaExcelEmpleado','cargaExcel')}"/>
+                            <p:remoteCommand name="stop" actionListener="#{empleadoTablaBean.borraTempExcel}"/>
                         </h:panelGrid>
+                        
                     </f:facet>                    
                 </p:toolbar>                
                 <p:dataTable id="tablaEmpleado" draggableColumns="true" resizableColumns="true" resizeMode="true" value="#{empleadoTablaBean.elementoCatalogo}" var="empleado" rowKey="#{empleado.idEmpleado}" widgetVar="tablaEmpleado" selectionMode="single" selection="#{empleadoTablaBean.elementoSeleccionado}" style="margin-top: 10px;" paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
@@ -83,8 +86,19 @@
 
             </h:form>
             <p:dialog modal="true" header="#{empleadoTablaBean.nombreDialogFrm}" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
-                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento}" process="@this"/>
+                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" process="@this"/>
                 <ui:include src="frm_empleado.xhtml"/>                
+            </p:dialog>                      
+            <p:dialog modal="true" header="#{empleadoTablaBean.nombreDialogFrm}" appendTo="@(body)" closeOnEscape="true" id="dialogCargaExcelEmpleado" widgetVar="dialogCargaExcelEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
+                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" process="@this"/>
+                <h:form id="frmDialogCargaExcel">
+                    <p:fileUpload mode="advanced" label="Escoger" 
+                                  uploadLabel="Subir" cancelLabel="Cancelar"
+                                  fileUploadListener="#{empleadoTablaBean.handleFileExcel}"
+                                  sizeLimit="100000000" fileLimit="20" 
+                                  allowTypes="/(\.|\/)(xlsx|XLSX)$/"
+                                  invalidFileMessage="Favor de seleccionar un archivo con extensi&oacute;n .xlxs"/>
+                </h:form>               
             </p:dialog>                      
         </ui:composition>
     </h:body>

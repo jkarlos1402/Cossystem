@@ -19,7 +19,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
+        <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -27,7 +27,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/login.xhtml</welcome-file>
+        <welcome-file>login.xhtml</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
@@ -51,7 +51,7 @@
     </mime-mapping>
     <error-page>
         <error-code>404</error-code>
-        <location>/faces/error/error404.xhtml</location>
+        <location>/error/error404.xhtml</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
@@ -80,7 +80,6 @@
     <servlet-mapping>
         <servlet-name>CrystalReportViewerServlet</servlet-name>
         <url-pattern>/CrystalReportViewerHandler</url-pattern>
-        <url-pattern>/faces/CrystalReportViewerHandler</url-pattern>
     </servlet-mapping>
     <resource-ref>
         <description>DB Connection</description>

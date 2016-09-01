@@ -96,8 +96,7 @@ public class EmpleadoFrmBean implements Serializable {
     }
 
     @PostConstruct
-    public void init() {
-        System.out.println("init frm empleado bean");
+    public void init() {       
         GenericDAO genericDAO = null;
         TreeMap mapaComponentes = new TreeMap<>();
         try {

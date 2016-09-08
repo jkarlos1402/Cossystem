@@ -12,6 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpSession;
  */
 @ManagedBean
 @SessionScoped
-public class PrincipalBean implements Serializable{
+public class PrincipalBean implements Serializable {
 
     private CatUsuarios usuarioSesion;
 
@@ -37,6 +38,10 @@ public class PrincipalBean implements Serializable{
 
     public void setUsuarioSesion(CatUsuarios usuarioSesion) {
         this.usuarioSesion = usuarioSesion;
+    }
+
+    public void resetFormulario(String nombreFormulario) {
+        RequestContext.getCurrentInstance().reset(nombreFormulario);
     }
 
 }

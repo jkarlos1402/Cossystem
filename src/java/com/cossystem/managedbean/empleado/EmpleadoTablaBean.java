@@ -10,8 +10,10 @@ import com.cossystem.core.util.ManagerXLSX;
 import com.cossystem.managedbean.PrincipalBean;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +38,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -46,8 +49,7 @@ import org.primefaces.model.StreamedContent;
 public class EmpleadoTablaBean implements Serializable {
 
     //Todos los beans administrados de tabla deben contener los siguientes atributos
-    private CatUsuarios usuarioSesion;
-    private String nombreDialogFrm = "";
+    private CatUsuarios usuarioSesion;    
     private String rutaReporte = "blank.xhtml";
     private StreamedContent fileExcel;
     private String nombreArchivo;
@@ -65,7 +67,7 @@ public class EmpleadoTablaBean implements Serializable {
     /**
      * Creates a new instance of AlertasBean
      */
-    public EmpleadoTablaBean() {        
+    public EmpleadoTablaBean() {
     }
 
     @PostConstruct
@@ -78,12 +80,7 @@ public class EmpleadoTablaBean implements Serializable {
         FacesMessage message = null;
         switch (tipoOperacion) {
             case "nuevo":
-                elementoSeleccionado = null;
-                elementoNuevo = new TblEmpleados();
-                empleadoFrmBean.setEmpleado(elementoNuevo);
-                empleadoFrmBean.setPermissionToWrite(true);
-                empleadoFrmBean.init();
-                nombreDialogFrm = "Cat\u00E1logo de Empleados - Agregar registro";
+                nuevoElemento();
                 RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
             case "editar":
@@ -91,7 +88,7 @@ public class EmpleadoTablaBean implements Serializable {
                     empleadoFrmBean.setEmpleado(elementoSeleccionado);
                     empleadoFrmBean.setPermissionToWrite(true);
                     empleadoFrmBean.init();
-                    nombreDialogFrm = "Cat\u00E1logo de Empleados - Editar registro";
+                    empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Editar registro");
                     RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 } else {
                     message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenci\u00f3n", "Ning\u00FAn elemento seleccionado.");
@@ -105,7 +102,7 @@ public class EmpleadoTablaBean implements Serializable {
                     empleadoFrmBean.setEmpleado(elementoSeleccionado);
                     empleadoFrmBean.setPermissionToWrite(false);
                     empleadoFrmBean.init();
-                    nombreDialogFrm = "Cat\u00E1logo de Empleados - Ver registro";
+                    empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Ver registro");
                     RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 } else {
                     message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenci\u00f3n", "Ning\u00FAn elemento seleccionado.");
@@ -115,14 +112,27 @@ public class EmpleadoTablaBean implements Serializable {
                 }
                 break;
             case "imprimir":
-                nombreDialogFrm = "Cat\u00E1logo de Empleados - Reporte";
+                empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Reporte");
                 //RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
             case "cargaExcel":
-                nombreDialogFrm = "Cat\u00E1logo de Empleados - Carga de excel";
+                empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Carga de excel");
+                RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
+                break;
+            case "consulta":
+                //empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Consulta");
                 RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
         }
+    }
+
+    public void nuevoElemento() {        
+        elementoSeleccionado = null;
+        elementoNuevo = new TblEmpleados();
+        empleadoFrmBean.setEmpleado(elementoNuevo);
+        empleadoFrmBean.setPermissionToWrite(true);
+        empleadoFrmBean.init();
+        empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Agregar registro");         
     }
 
     public void refreshElementoCatalogo() {
@@ -231,15 +241,7 @@ public class EmpleadoTablaBean implements Serializable {
 
     public void setElementoCatalogo(List<TblEmpleados> elementoCatalogo) {
         this.elementoCatalogo = elementoCatalogo;
-    }
-
-    public String getNombreDialogFrm() {
-        return nombreDialogFrm;
-    }
-
-    public void setNombreDialogFrm(String nombreDialogFrm) {
-        this.nombreDialogFrm = nombreDialogFrm;
-    }
+    }    
 
     public CatUsuarios getUsuarioSesion() {
         return usuarioSesion;
@@ -280,7 +282,7 @@ public class EmpleadoTablaBean implements Serializable {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
             nombreArchivo = nombreArchivoExcel;
             fileExcel = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "catalogoEmpleados" + sdf.format(fechaHoy.getTime()) + ".xlsx");
-        } catch (IOException | DAOException | DataBaseException ex) {            
+        } catch (IOException | DAOException | DataBaseException ex) {
             message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error al descargar archivo", ex.getMessage());
         }
         if (message != null) {
@@ -293,19 +295,62 @@ public class EmpleadoTablaBean implements Serializable {
         this.fileExcel = fileExcel;
     }
 
-    public void borraTempExcel() {        
-        File file = new File(nombreArchivo);        
-        if(file.isFile()){
+    public void borraTempExcel() {
+        File file = new File(nombreArchivo);
+        if (file.isFile()) {
             file.delete();
         }
     }
-    
-    public void handleFileExcel(FileUploadEvent event){
-        System.out.println("se subio archivo");
+
+    public void handleFileExcel(FileUploadEvent event) {
+        FacesMessage message;
+        FacesContext context = FacesContext.getCurrentInstance();
+        OutputStream outputStream = null;
+        InputStream inputStream = null;
+        File archivoTemp = null;
         try {
-            ManagerXLSX.cargaCatalogoExcel(TblEmpleados.class, event.getFile().getInputstream());
-        } catch (IOException ex) {
-            Logger.getLogger(EmpleadoTablaBean.class.getName()).log(Level.SEVERE, null, ex);
+            UploadedFile file = event.getFile();
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            String contextPathResources = servletContext.getRealPath("");
+            File dirTemp = new File(contextPathResources + File.separator + "tempCargaExcel");
+            if (!dirTemp.isDirectory()) {
+                dirTemp.mkdirs();
+            }
+            System.out.println("llegamos aqui");
+            String rutaArchivoTemp = contextPathResources + File.separator + "tempCargaExcel" + File.separator + "tempCarga" + Calendar.getInstance().getTimeInMillis() + ".xlsx";
+            archivoTemp = new File(rutaArchivoTemp);
+            outputStream = new FileOutputStream(archivoTemp);
+            inputStream = event.getFile().getInputstream();
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            ManagerXLSX.cargaCatalogoExcel(TblEmpleados.class, rutaArchivoTemp);
+            refreshElementoCatalogo();
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Terminado", "La carga del archivo excel se realiz\u00f3 correctamente");
+        } catch (Exception ex) {
+            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + ex.getMessage());
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + e.getMessage());
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + e.getMessage());
+                }
+
+            }
+            if (archivoTemp != null) {
+                archivoTemp.delete();
+            }
         }
+        context.addMessage(null, message);
     }
 }

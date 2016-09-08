@@ -8,6 +8,12 @@ function muestraMensajeDescargaExcel(idMensajes) {
         "severity": "info"});
 }
 
+function muestraMensajeCargarExcel(idMensajes) {
+    PF(idMensajes).renderMessage({"summary": "La carga de informaci\u00f3n ha comenzado",
+        "detail": "Por favor espere, el proceso puede tardar unos minutos",
+        "severity": "info"});
+}
+
 function showBlockDescargaExcel() {
     PF("blockTabla").show();
 }

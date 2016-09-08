@@ -52,6 +52,7 @@ public class EmpleadoFrmBean implements Serializable {
     private TblEmpresa empresa;
     private boolean permissionToWrite = true;
     private String tituloSubCatalogo = "";
+    private String nombreAccionFrm = "";
 
     private TblEmpleados empleado;
 
@@ -96,7 +97,7 @@ public class EmpleadoFrmBean implements Serializable {
     }
 
     @PostConstruct
-    public void init() {       
+    public void init() {
         GenericDAO genericDAO = null;
         TreeMap mapaComponentes = new TreeMap<>();
         try {
@@ -607,4 +608,18 @@ public class EmpleadoFrmBean implements Serializable {
         this.principalBean = principalBean;
     }
 
+    public String getNombreAccionFrm() {
+        return nombreAccionFrm;
+    }
+
+    public void setNombreAccionFrm(String nombreAccionFrm) {
+        this.nombreAccionFrm = nombreAccionFrm;
+    }
+
+    public void nuevoElemento() {
+        empleado = new TblEmpleados();
+        permissionToWrite = true;
+        init();
+        nombreAccionFrm = "Cat\u00E1logo de Empleados - Agregar registro";
+    }
 }

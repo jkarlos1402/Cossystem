@@ -84,33 +84,31 @@ body{
 }
 
 .iconoAmpliar{
-    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;
-    width: 32px;
-    height: 32px;
+    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;    
 }
 
 .iconoVer{
-    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;
-    width: 32px;
-    height: 32px;
+    background-image: url('../../imagenes/buscar-buscar-ampliar-icono.png') !important;    
 }
 
 .iconoNuevo{
-    background-image: url('../../imagenes/nuevo-icono.png') !important;
-    width: 32px;
-    height: 32px;
+    background-image: url('../../imagenes/nuevo-icono.png') !important;    
 }
 
 .iconoDescargar{
-    background-image: url('../../imagenes/descargar-icono.png') !important;
-    width: 32px;
-    height: 32px;
+    background-image: url('../../imagenes/descargar-icono.png') !important;    
 }
 
 .iconoCargar{
-    background-image: url('../../imagenes/subir-icono.png') !important;
-    width: 32px;
-    height: 32px;
+    background-image: url('../../imagenes/subir-icono.png') !important;    
+}
+
+.iconoFiltro{
+    background-image: url('../../imagenes/filtro-icono.png') !important;    
+}
+
+.iconoCorreo{
+    background-image: url('../../imagenes/e-mail-icono.png') !important;    
 }
 
 /*.ui-button-icon-only{

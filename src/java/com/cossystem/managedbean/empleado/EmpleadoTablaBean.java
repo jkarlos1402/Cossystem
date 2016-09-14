@@ -1,13 +1,15 @@
 package com.cossystem.managedbean.empleado;
 
 import com.cossystem.core.dao.GenericDAO;
+import com.cossystem.core.dao.catalogo.TblEmpleadosDAO;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
-import com.cossystem.core.pojos.catalogos.TblConfiguracionCossAdmin;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
 import com.cossystem.core.util.ManagerXLSX;
 import com.cossystem.managedbean.PrincipalBean;
+import com.cossystem.managedbean.filtro.FiltroEntidad;
+import com.cossystem.util.Propiedades;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +52,7 @@ import org.primefaces.model.UploadedFile;
 public class EmpleadoTablaBean implements Serializable {
 
     //Todos los beans administrados de tabla deben contener los siguientes atributos
-    private CatUsuarios usuarioSesion;    
+    private CatUsuarios usuarioSesion;
     private String rutaReporte = "blank.xhtml";
     private StreamedContent fileExcel;
     private String nombreArchivo;
@@ -63,6 +66,9 @@ public class EmpleadoTablaBean implements Serializable {
 
     @ManagedProperty(value = "#{empleadoFrmBean}")
     private EmpleadoFrmBean empleadoFrmBean;
+
+    @ManagedProperty(value = "#{filtroEntidadTblEmpleados}")
+    private FiltroEntidad filtroEntidad;
 
     /**
      * Creates a new instance of AlertasBean
@@ -121,18 +127,19 @@ public class EmpleadoTablaBean implements Serializable {
                 break;
             case "consulta":
                 //empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Consulta");
+                filtroEntidad.setClaseEntidad(TblEmpleados.class);
                 RequestContext.getCurrentInstance().execute("PF('" + nombreDialog + "').show()");
                 break;
         }
     }
 
-    public void nuevoElemento() {        
+    public void nuevoElemento() {
         elementoSeleccionado = null;
         elementoNuevo = new TblEmpleados();
         empleadoFrmBean.setEmpleado(elementoNuevo);
         empleadoFrmBean.setPermissionToWrite(true);
         empleadoFrmBean.init();
-        empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Agregar registro");         
+        empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Agregar registro");
     }
 
     public void refreshElementoCatalogo() {
@@ -140,9 +147,13 @@ public class EmpleadoTablaBean implements Serializable {
         TreeMap mapaComponentes = new TreeMap<>();
         GenericDAO genericDAO = null;
         try {
-            genericDAO = new GenericDAO();
-            mapaComponentes.put("idEmpresa", usuarioSesion.getIdEmpresa());
-            elementoCatalogo = genericDAO.findByComponents(TblEmpleados.class, mapaComponentes);
+            genericDAO = new TblEmpleadosDAO();
+            if (filtroEntidad != null && filtroEntidad.getFiltros() != null && !filtroEntidad.getFiltros().isEmpty() && filtroEntidad.getFiltros().get(0).getComparador() != null) {
+                elementoCatalogo = genericDAO.findByComponents(TblEmpleados.class, filtroEntidad.getFiltros());
+            } else {
+                mapaComponentes.put("idEmpresa", usuarioSesion.getIdEmpresa());
+                elementoCatalogo = genericDAO.findByComponents(TblEmpleados.class, mapaComponentes);
+            }
         } catch (DAOException | DataBaseException ex) {
             message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
         } finally {
@@ -189,12 +200,19 @@ public class EmpleadoTablaBean implements Serializable {
     public void eliminaElemento(final String nombreTabla) {
         FacesMessage message;
         GenericDAO genericDAO = null;
+        Properties properties;
         if (elementoSeleccionado != null) {
             try {
-                genericDAO = new GenericDAO();
+                properties = Propiedades.obtienePropiedades();
+                genericDAO = new TblEmpleadosDAO();
+                Integer idEliminado = elementoSeleccionado.getIdEmpleado();
                 genericDAO.delete(elementoSeleccionado);
+                File dirFotos = new File(properties.getProperty("fotosPath") + File.separator + idEliminado);
+                if(dirFotos.isDirectory()){
+                    dirFotos.delete();
+                }
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "El elemento ha sido eliminado");
-            } catch (DAOException | DataBaseException ex) {
+            } catch (DAOException | DataBaseException | IOException ex) {
                 message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
             } finally {
                 if (genericDAO != null) {
@@ -213,7 +231,6 @@ public class EmpleadoTablaBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
         ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
         String contextPathResources = servletContext.getRealPath("");
-        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         Map filtros = new TreeMap();
         filtros.put("idEmpresa", usuarioSesion.getIdEmpresa());
         return contextPathResources + File.separator + "tempExcel" + File.separator + ManagerXLSX.generaArchivoExcel(TblEmpleados.class, filtros, contextPathResources + File.separator + "tempExcel");
@@ -241,7 +258,7 @@ public class EmpleadoTablaBean implements Serializable {
 
     public void setElementoCatalogo(List<TblEmpleados> elementoCatalogo) {
         this.elementoCatalogo = elementoCatalogo;
-    }    
+    }
 
     public CatUsuarios getUsuarioSesion() {
         return usuarioSesion;
@@ -316,7 +333,6 @@ public class EmpleadoTablaBean implements Serializable {
             if (!dirTemp.isDirectory()) {
                 dirTemp.mkdirs();
             }
-            System.out.println("llegamos aqui");
             String rutaArchivoTemp = contextPathResources + File.separator + "tempCargaExcel" + File.separator + "tempCarga" + Calendar.getInstance().getTimeInMillis() + ".xlsx";
             archivoTemp = new File(rutaArchivoTemp);
             outputStream = new FileOutputStream(archivoTemp);
@@ -352,5 +368,18 @@ public class EmpleadoTablaBean implements Serializable {
             }
         }
         context.addMessage(null, message);
+    }
+
+    public FiltroEntidad getFiltroEntidad() {
+        return filtroEntidad;
+    }
+
+    public void setFiltroEntidad(FiltroEntidad filtroEntidad) {
+        this.filtroEntidad = filtroEntidad;
+    }
+
+    public void todosLosRegistros() {
+        filtroEntidad.init();
+        refreshElementoCatalogo();
     }
 }

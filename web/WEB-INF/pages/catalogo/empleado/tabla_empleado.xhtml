@@ -42,16 +42,16 @@
                             </p:commandButton>                             
                             <p:commandButton id="btnSubirExcelEmpleadoTool" widgetVar="btnSubirExcelEmpleadoTool" icon="iconoCargar" title="Cargar excel" update="dialogCargaExcelEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogCargaExcelEmpleado','cargaExcel')}"/>
                             <p:commandButton id="btnConsultarEmpleadoTool" widgetVar="btnConsultarEmpleadoTool" icon="iconoFiltro" title="Consultar" update="dialogConsultaEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogConsultaEmpleado','consulta')}"/>
-                            <p:commandButton id="btnEnviarEmpleadoTool" widgetVar="btnEnviarEmpleadoTool" icon="iconoCorreo" title="Enviar correo"/>
+                            <p:commandButton id="btnTodosEmpleadoTool" widgetVar="btnTodosEmpleadoTool" icon="iconoCancelar" title="Quitar filtro" update="tablaEmpleado,dialogConsultaEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.todosLosRegistros}"/>                            
                             <span class="ui-separator">
                                 <span class="ui-icon ui-icon-grip-dotted-vertical"/>
                             </span>
+                            <p:commandButton id="btnEnviarEmpleadoTool" widgetVar="btnEnviarEmpleadoTool" icon="iconoCorreo" title="Enviar correo"/>
                             <p:commandButton id="btnAgregaProspectosEmpleadoTool" value="Agregar Prospectos"/>    
                             <p:commandButton id="btnAgregaTareasEmpleadoTool" value="Agregar Tareas" />    
                             <p:commandButton id="btnRegistroActividadEmpleadoTool" value="Registro de Actividad"/>                                                                                            
                             <p:remoteCommand name="stop" actionListener="#{empleadoTablaBean.borraTempExcel}"/>
                         </h:panelGrid>
-
                     </f:facet>                    
                 </p:toolbar>                
                 <p:dataTable id="tablaEmpleado" draggableColumns="true" resizableColumns="true" resizeMode="true" value="#{empleadoTablaBean.elementoCatalogo}" var="empleado" rowKey="#{empleado.idEmpleado}" widgetVar="tablaEmpleado" selectionMode="single" selection="#{empleadoTablaBean.elementoSeleccionado}" style="margin-top: 10px;" paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
@@ -81,7 +81,7 @@
                         <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
                     </p:menuitem>
                 </p:contextMenu>                
-                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleado,btnRefreshEmpleadoTool,btnDescExcelEmpleadoTool" widgetVar="blockTabla">                   
+                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleado,btnRefreshEmpleadoTool,btnDescExcelEmpleadoTool,btnConsultarEmpleadoTool,btnTodosEmpleadoTool" widgetVar="blockTablaEmpleado">                   
                     <p style="font-size:14px; color: black;">
                         Cargando...
                     </p> 
@@ -92,13 +92,18 @@
                 </p:confirmDialog>
 
             </h:form>
-            <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
-                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" process="@this"/>
+            <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" maximizable="true" width="80%" styleClass="dialogStyle" height="auto" resizable="true" draggable="false" dynamic="true" responsive="true">
+                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" process="@this" oncomplete="PF('tablaEmpleado').filter();"/>
                 <ui:include src="frm_empleado.xhtml"/>                
             </p:dialog>                      
-            <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogConsultaEmpleado" widgetVar="dialogConsultaEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
-                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" process="@this"/>
-                <p:outputPanel />              
+            <p:dialog modal="true" header="Consultar" appendTo="@(body)" closeOnEscape="true" id="dialogConsultaEmpleado" widgetVar="dialogConsultaEmpleado" maximizable="true" width="70%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" responsive="true">
+                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado"  process="@this" listener="#{empleadoTablaBean.refreshElementoCatalogo}" onstart="PF('blockTablaEmpleado').show();" oncomplete="PF('blockTablaEmpleado').hide();"/>
+                <ui:include src="AddFiltro_empleado.xhtml"/>                  
+                <f:facet name="footer">
+                    <h:form>
+                        <p:commandButton value="Aceptar" styleClass="botonAceptar" onclick="PF('dialogConsultaEmpleado').hide();"/>
+                    </h:form>
+                </f:facet>
             </p:dialog>                      
             <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogCargaExcelEmpleado" widgetVar="dialogCargaExcelEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
                 <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" process="@this"/>

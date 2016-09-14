@@ -18,10 +18,10 @@
                     <p:inputText required="true" styleClass="inputLogin" value="#{loginBean.user}" requiredMessage="Ingrese usuario"/>
 
                     <p:outputLabel value="Empresa: " styleClass="labelLogin"/>
-                    <p:selectOneMenu required="true" styleClass="inputLogin" value="#{loginBean.empresa}" converter="genericConverter" requiredMessage="Seleccione empresa">
+                    <h:selectOneMenu required="true" styleClass="inputLogin" value="#{loginBean.empresa}" converter="genericConverter" requiredMessage="Seleccione empresa">
                         <f:selectItem itemValue="" itemLabel="Seleccione"/>
                         <f:selectItems value="#{loginBean.catEmpresas}" var="empresaLogin" itemLabel="#{empresaLogin.empRazonSocial}" />
-                    </p:selectOneMenu>
+                    </h:selectOneMenu>
 
                     <p:outputLabel value="Contrase&ntilde;a: " styleClass="labelLogin"/>
                     <p:inputText required="true" type="password" styleClass="inputLogin" value="#{loginBean.password}" requiredMessage="Ingrese contrase&ntilde;a"/>

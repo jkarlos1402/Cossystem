@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>            
+            <h:form id="formFiltro">                
+                <div class="ui-fluid">
+                    <p:panelGrid columns="6" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-3,ui-grid-col-3,ui-grid-col-1,ui-grid-col-1" styleClass="ui-panelgrid-blank" layout="grid">
+                        <c:forEach var="filtro" items="#{filtroEntidadTblEmpleados.filtros}" varStatus="index">
+                            <h:selectOneMenu styleClass="comboResponsivo" value="#{filtro.nombreCampoClase}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                                <f:selectItems value="#{filtroEntidadTblEmpleados.componentesComboCampos}"/>
+                                <p:ajax listener="#{filtroEntidadTblEmpleados.selecionarCampo(index)}" update="formFiltro" onstart="PF('blockFiltro').show()" oncomplete="PF('blockFiltro').hide()"/>
+                            </h:selectOneMenu>
+                            <h:selectOneMenu styleClass="comboResponsivo" value="#{filtro.comparador}" required="true">
+                                <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                                <f:selectItem itemValue="igual" itemLabel="Igual a"/>
+                                <f:selectItem itemValue="diferente" itemLabel="Diferente a"/>                                
+                                <f:selectItem itemValue="contenga" itemLabel="Que contenga" itemDisabled="#{not filtro.campoString}"/>
+                                <f:selectItem itemValue="mayor" itemLabel="Mayor a" itemDisabled="#{not filtro.campoNumerico and not filtro.campoFecha}"/>
+                                <f:selectItem itemValue="mayorIgual" itemLabel="Mayor o igual a" itemDisabled="#{not filtro.campoNumerico and not filtro.campoFecha}"/>
+                                <f:selectItem itemValue="menor" itemLabel="Menor a" itemDisabled="#{not filtro.campoNumerico and not filtro.campoFecha}"/>
+                                <f:selectItem itemValue="menorIgual" itemLabel="Menor o igual a" itemDisabled="#{not filtro.campoNumerico and not filtro.campoFecha}"/>
+                                <f:selectItem itemValue="entre" itemLabel="Entre" itemDisabled="#{not filtro.campoNumerico and not filtro.campoFecha}"/>
+                                <p:ajax listener="#{filtroEntidadTblEmpleados.selecionarComparador(index)}" update="formFiltro"/>
+                            </h:selectOneMenu>
+                            <p:inputText rendered="#{filtro.campoString}" value="#{filtro.valorString}" required="true">
+                                <p:ajax />
+                            </p:inputText> 
+                            <p:spacer rendered="#{filtro.campoString}"/>
+                            <h:selectOneMenu styleClass="comboResponsivo" value="#{filtro.valorCatalogo}" required="true" converter="genericConverter" rendered="#{filtro.campoCatalogo}">
+                                <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                                <f:selectItems value="#{filtro.componentesComboCatalogo}"/>
+                                <p:ajax />
+                            </h:selectOneMenu>
+                            <p:spacer rendered="#{filtro.campoCatalogo}"/>
+                            <h:selectOneMenu styleClass="comboResponsivo" value="#{filtro.valorBooleano}" required="true" rendered="#{filtro.campoBooleano}">
+                                <f:selectItem itemValue="" itemLabel="Seleccione" noSelectionOption="true"/>
+                                <f:selectItem itemValue="true" itemLabel="Verdadero"/>
+                                <f:selectItem itemValue="false" itemLabel="Falso"/>
+                                <p:ajax event="change"/>
+                            </h:selectOneMenu>
+                            <p:spacer rendered="#{filtro.campoBooleano}"/>
+                            <p:calendar placeholder="#{filtro.intervalo ? 'Inicio' : ''}" value="#{filtro.valorFecha}" pattern="dd/MM/yyyy" mask="true" rendered="#{filtro.campoFecha}" required="true">
+                                <p:ajax event="dateSelect"/>
+                            </p:calendar> 
+                            <p:spacer rendered="#{not filtro.intervalo and filtro.campoFecha}"/>
+                            <p:calendar placeholder="Fin" value="#{filtro.valorFechaFinal}" pattern="dd/MM/yyyy" mask="true" rendered="#{filtro.intervalo and filtro.campoFecha}" mindate="#{filtro.valorFecha}" required="true">
+                                <p:ajax event="dateSelect"/>
+                            </p:calendar>                            
+
+                            <p:inputNumber placeholder="#{filtro.intervalo ? 'Inicio' : ''}" value="#{filtro.valorNumerico}" rendered="#{filtro.campoNumerico}" required="true">
+                                <p:ajax update="formFiltro"/>
+                            </p:inputNumber>
+                            <p:spacer rendered="#{not filtro.intervalo and filtro.campoNumerico}"/>
+                            <p:inputNumber placeholder="Fin" value="#{filtro.valorNumericoFinal}" rendered="#{filtro.intervalo and filtro.campoNumerico}" required="true">
+                                <p:ajax />
+                            </p:inputNumber>
+
+                            <h:selectOneMenu styleClass="comboResponsivo" value="#{filtro.agregar}">
+                                <f:selectItem itemValue="" itemLabel="Seleccione" noSelectionOption="true"/>
+                                <f:selectItem itemValue="y" itemLabel="Y"/>
+                                <f:selectItem itemValue="o" itemLabel="O"/>
+                                <p:ajax listener="#{filtroEntidadTblEmpleados.agregarFiltro(index)}" update="formFiltro"/>
+                            </h:selectOneMenu>
+                            <p:commandButton actionListener="#{filtroEntidadTblEmpleados.eliminarFiltro(index)}" rendered="#{index.index ne 0}" update="formFiltro" icon="ui-icon-trash" alt="Eliminar filtro" immediate="true"/>
+                            <p:spacer rendered="#{index.index eq 0}"/>
+                        </c:forEach>                        
+                    </p:panelGrid>
+                    <p:blockUI block="formFiltro"  widgetVar="blockFiltro">                   
+                        <p style="font-size:14px; color: black; font-weight: bolder;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI>
+                </div>
+            </h:form>            
+        </ui:composition>
+    </h:body>
+</html>
+

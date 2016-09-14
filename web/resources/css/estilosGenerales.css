@@ -111,18 +111,26 @@ body{
     background-image: url('../../imagenes/e-mail-icono.png') !important;    
 }
 
-/*.ui-button-icon-only{
-    width: 3em !important;
-    height: 2.5em !important;
+.iconoCancelar{
+    background-image: url('../../imagenes/cancelar-icono.png') !important;    
 }
 
-.ui-button-icon-only .ui-icon{
-    left: 50% !important;
-    margin-left: -13px !important;
+.claseConsulta{
+    width: 100%;
 }
 
-.ui-button-icon-only .ui-icon, .ui-button-text-icon-left .ui-icon, .ui-button-text-icon-right .ui-icon{
-    position: absolute !important;
-    top: 50% !important;
-    margin-top: -15px !important;
-}*/
+.comboResponsivo{
+    width: 100%;
+}
+
+.botonAceptar{
+    width: 72px !important;
+}
+
+.ui-fileupload-content{
+    overflow: auto;
+}
+
+.uploadFoto > .ui-fileupload-content{
+    max-height: 190px;    
+}

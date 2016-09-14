@@ -11,10 +11,14 @@ import com.cossystem.core.exception.DataBaseException;
 import com.cossystem.core.pojos.catalogos.CatUsuarios;
 import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividad;
 import com.cossystem.core.pojos.empresa.TblEmpresa;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +26,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -115,9 +120,9 @@ public class LoginBean implements Serializable {
         fechaHoy.set(Calendar.HOUR, 0);
         fechaHoy.set(Calendar.MINUTE, 0);
         fechaHoy.set(Calendar.SECOND, 0);
-        fechaHoy.set(Calendar.MILLISECOND, 0);
+        fechaHoy.set(Calendar.MILLISECOND, 0);                       
         try {
-            genericDAO = new GenericDAO();
+            genericDAO = new GenericDAO();            
             mapaComponentes = new TreeMap<>();
             mapaComponentes.put("usuario", user);
             mapaComponentes.put("password", password);
@@ -151,7 +156,7 @@ public class LoginBean implements Serializable {
                 usuarioSesion.setNumIp(request.getRemoteAddr());
                 usuarioSesion.setFechaInicial(new Date());
                 genericDAO.saveOrUpdate(usuarioSesion);
-                httpSession.setAttribute("session_user", usuarioSesion);
+                httpSession.setAttribute("session_user", usuarioSesion);                
 //                httpSession.setAttribute("genericdao_user", new GenericDAO());                
                 return "correct";
             } else {

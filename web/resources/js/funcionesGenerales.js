@@ -38,22 +38,22 @@ function myMonitorDownload(d, c) {
             clearInterval(interval);
         }
     }, 250);
+}
+function asignaListenerSlider() {
+    $(".previous").on('click', function (e) {
+        e.preventDefault();
+    });
+    $(".next").on('click', function (e) {
+        e.preventDefault();
+    });
+}
+function refrescaSlider() {
+    $('.crsl-items').carousel({
+        visible: 1,
+        itemMinWidth: 220,
+        itemEqualHeight: 160,
+        itemMargin: 9
+    });
 
-//    (d, c){
-//        if (this.cookiesEnabled()) {
-//            if (d) {
-//                d()
-//            }
-//            a.downloadMonitor = setInterval(function () {
-//                var e = b.getCookie("primefaces.download");
-//                if (e === "true") {
-//                    if (c) {
-//                        c()
-//                    }
-//                    clearInterval(a.downloadMonitor);
-//                    b.setCookie("primefaces.download", null)
-//                }
-//            }, 250)
-//        }
-//    }
+    console.log("ya se actualizo slider");
 }

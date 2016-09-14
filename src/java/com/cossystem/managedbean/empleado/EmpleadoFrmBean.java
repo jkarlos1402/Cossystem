@@ -6,6 +6,7 @@
 package com.cossystem.managedbean.empleado;
 
 import com.cossystem.core.dao.GenericDAO;
+import com.cossystem.core.dao.catalogo.TblEmpleadosDAO;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
 import com.cossystem.core.pojos.catalogos.CatArea;
@@ -23,22 +24,36 @@ import com.cossystem.core.pojos.catalogos.CatUsuarios;
 import com.cossystem.core.pojos.empleado.TblEmpleados;
 import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividad;
 import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividadDet;
+import com.cossystem.core.pojos.empleado.TblEmpleadosFotos;
 import com.cossystem.core.pojos.empresa.TblEmpresa;
 import com.cossystem.core.pojos.empresa.TblEmpresaPosicion;
 import com.cossystem.core.pojos.empresa.TblEmpresaProyectos;
 import com.cossystem.managedbean.PrincipalBean;
+import com.cossystem.util.Propiedades;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 
 /**
  *
@@ -47,6 +62,8 @@ import org.primefaces.context.RequestContext;
 @ManagedBean
 @ViewScoped
 public class EmpleadoFrmBean implements Serializable {
+
+    private GenericDAO genericDAO = null;
 
     private CatUsuarios usuarioSesion;
     private TblEmpresa empresa;
@@ -98,10 +115,12 @@ public class EmpleadoFrmBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        GenericDAO genericDAO = null;
         TreeMap mapaComponentes = new TreeMap<>();
+
         try {
-            genericDAO = new GenericDAO();
+            if (genericDAO == null) {
+                genericDAO = new TblEmpleadosDAO();
+            }
             if (principalBean != null) {
                 usuarioSesion = principalBean.getUsuarioSesion();
                 empresa = usuarioSesion.getIdEmpresa();
@@ -111,6 +130,8 @@ public class EmpleadoFrmBean implements Serializable {
                 empleado.setIdEmpresa(empresa);
             } else if (empleado.getIdEmpleado() == null) {
                 empleado.setIdEmpresa(empresa);
+            } else if (empleado.getIdEmpleado() != null) {
+                genericDAO.getSession().refresh(empleado);
             }
             if (bndCatalogoEstados) {
                 mapaComponentes.clear();
@@ -208,37 +229,46 @@ public class EmpleadoFrmBean implements Serializable {
                     catalogoActividadDet = genericDAO.findByComponents(TblEmpleadosDiarioActividadDet.class, mapaComponentes);
                 }
             }
-        } catch (DAOException | DataBaseException ex) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+            String contextPathResources = servletContext.getRealPath("");
+            Properties propiedadesIniciales = new Properties();
+            propiedadesIniciales.load(new FileInputStream(contextPathResources + File.separator + "WEB-INF" + File.separator + "initConfig.properties"));
+            Properties propiedades = new Properties();
+            propiedades.load(new FileInputStream(propiedadesIniciales.getProperty("configPath") + File.separator + "config.properties"));
+        } catch (DAOException | DataBaseException | IOException ex) {
             Logger.getLogger(EmpleadoFrmBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
         }
+//        } finally {
+//            if (genericDAO != null) {
+//                genericDAO.closeDAO();
+//            }
+//        }
     }
 
     public void listenerSelectArea() {
-        GenericDAO genericDAO = null;
+//        GenericDAO genericDAO = null;
         try {
-            genericDAO = new GenericDAO();
+//            genericDAO = new GenericDAO();
             TreeMap mapaComponentes = new TreeMap<>();
             mapaComponentes.clear();
             mapaComponentes.put("idArea", empleado.getIdArea());
             mapaComponentes.put("idStatus", true);
             catalogoDepartamento = genericDAO.findByComponents(CatDepartamento.class, mapaComponentes);
-        } catch (DataBaseException | DAOException ex) {
+        } catch (DAOException ex) {
             Logger.getLogger(EmpleadoFrmBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
         }
+//        finally {
+//            if (genericDAO != null) {
+//                genericDAO.closeDAO();
+//            }
+//        }
     }
 
     public void listenerSelectDepartamento() {
-        GenericDAO genericDAO = null;
+//        GenericDAO genericDAO = null;
         try {
-            genericDAO = new GenericDAO();
+//            genericDAO = new GenericDAO();
             TreeMap mapaComponentes = new TreeMap<>();
             mapaComponentes.clear();
             mapaComponentes.put("idDepartamento", empleado.getIdDepartamento());
@@ -248,30 +278,32 @@ public class EmpleadoFrmBean implements Serializable {
             mapaComponentes.put("idDepartamento", empleado.getIdDepartamento());
             mapaComponentes.put("idStatus", true);
             catalogoPuestos = genericDAO.findByComponents(CatEmpPuestos.class, mapaComponentes);
-        } catch (DataBaseException | DAOException ex) {
+        } catch (DAOException ex) {
             Logger.getLogger(EmpleadoFrmBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
         }
+//        finally {
+//            if (genericDAO != null) {
+//                genericDAO.closeDAO();
+//            }
+//        }
     }
 
     public void listenerSelectActividad() {
-        GenericDAO genericDAO = null;
+//        GenericDAO genericDAO = null;
         try {
-            genericDAO = new GenericDAO();
+//            genericDAO = new GenericDAO();
             TreeMap mapaComponentes = new TreeMap<>();
             mapaComponentes.clear();
             mapaComponentes.put("idActividad", empleado.getIdActividad());
             catalogoActividadDet = genericDAO.findByComponents(TblEmpleadosDiarioActividadDet.class, mapaComponentes);
-        } catch (DataBaseException | DAOException ex) {
+        } catch (DAOException ex) {
             Logger.getLogger(EmpleadoFrmBean.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (genericDAO != null) {
-                genericDAO.closeDAO();
-            }
         }
+//        finally {
+//            if (genericDAO != null) {
+//                genericDAO.closeDAO();
+//            }
+//        }
     }
 
     public void resetDialog() {
@@ -280,24 +312,40 @@ public class EmpleadoFrmBean implements Serializable {
 
     public void guardarElemento() {
         FacesContext context = FacesContext.getCurrentInstance();
-        GenericDAO genericDAO = null;
+//        GenericDAO genericDAO = null;
         FacesMessage message = null;
+        Properties properties = null;
         if (empleado != null) {
             try {
-                genericDAO = new GenericDAO();
+                properties = Propiedades.obtienePropiedades();
+//                genericDAO = new TblEmpleadosDAO();
                 genericDAO.saveOrUpdate(empleado);
-                RequestContext.getCurrentInstance().reset("formFrmEmpleado");
-                empleado = new TblEmpleados();
-                RequestContext.getCurrentInstance().execute("PF('dialogFrmEmpleado').hide()");
-                RequestContext.getCurrentInstance().execute("PF('tablaEmpleado').filter()");
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Terminado", "Elemento guardado correctamente");
-            } catch (Exception ex) {
-                message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-            } finally {
-                if (genericDAO != null) {
-                    genericDAO.closeDAO();
+                File dirFotos = new File(properties.getProperty("fotosPath") + File.separator + empleado.getIdEmpleado());
+                File[] archivosDirFotos;
+                if (dirFotos.isDirectory()) {
+                    archivosDirFotos = dirFotos.listFiles();
+                    labelFoto:
+                    for (File archivoDirFotos : archivosDirFotos) {
+                        if (archivoDirFotos.isFile()) {
+                            for (int i = 0; i < (empleado.getTblEmpleadosFotosList() != null ? empleado.getTblEmpleadosFotosList().size() : 0); i++) {
+                                if (empleado.getTblEmpleadosFotosList().get(i).getNombreFoto().equals(archivoDirFotos.getName())) {
+                                    continue labelFoto;
+                                }
+
+                            }
+                            archivoDirFotos.delete();
+                        }
+                    }
                 }
+                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Terminado", "Elemento guardado correctamente");
+            } catch (DAOException | IOException ex) {
+                message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
             }
+//            finally {
+//                if (genericDAO != null) {
+//                    genericDAO.closeDAO();
+//                }
+//            }
         }
         if (message != null) {
             context.addMessage(null, message);
@@ -621,5 +669,102 @@ public class EmpleadoFrmBean implements Serializable {
         permissionToWrite = true;
         init();
         nombreAccionFrm = "Cat\u00E1logo de Empleados - Agregar registro";
+    }
+
+    public void subirFoto(FileUploadEvent event) {
+        FacesMessage message = null;
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        try {
+            Properties propiedades = Propiedades.obtienePropiedades();
+            String rutaFotos = (String) propiedades.get("fotosPath");
+            String nombreCarpetaFotos = empleado.getIdEmpleado().toString();
+            File dirFotos = new File(rutaFotos + File.separator + nombreCarpetaFotos);
+            if (!dirFotos.isDirectory()) {
+                dirFotos.mkdirs();
+            }
+            String ext = getExtension(event.getFile().getFileName());
+            String nombreFoto = "foto-" + empleado.getIdEmpleado() + "-" + Calendar.getInstance().getTime().getTime() + "." + ext;
+            outputStream = new FileOutputStream(dirFotos.getAbsolutePath() + File.separator + nombreFoto);
+            inputStream = event.getFile().getInputstream();
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+            TblEmpleadosFotos foto = new TblEmpleadosFotos();
+            foto.setIdEmpleado(empleado);
+            foto.setIdEmpresa(empleado.getIdEmpresa());
+            foto.setNombreFoto(nombreFoto);
+            foto.setIdStatus(true);
+            foto.setPrincipal(false);
+            if (empleado.getTblEmpleadosFotosList() == null) {
+                empleado.setTblEmpleadosFotosList(new ArrayList<TblEmpleadosFotos>());
+            }
+            empleado.getTblEmpleadosFotosList().add(foto);
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Fotos cargadas, guarde los cambios");
+        } catch (IOException ex) {
+            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException ex) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
+                }
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException ex) {
+                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
+                }
+            }
+        }
+        if (message != null) {
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+
+    public void selectPrincipal(int index) {
+        if (empleado.getTblEmpleadosFotosList() != null && empleado.getTblEmpleadosFotosList().size() > index) {
+            for (int i = 0; i < empleado.getTblEmpleadosFotosList().size(); i++) {
+                if (i != index) {
+                    empleado.getTblEmpleadosFotosList().get(i).setPrincipal(false);
+                }
+            }
+        }
+    }
+
+    public void eliminaFoto(String nombreFoto) {
+        FacesMessage message = null;
+        System.out.println("nombre foto: "+nombreFoto);
+        if (empleado.getTblEmpleadosFotosList() != null && !empleado.getTblEmpleadosFotosList().isEmpty()) {
+            for (int i = 0; i < empleado.getTblEmpleadosFotosList().size(); i++) {
+                if (empleado.getTblEmpleadosFotosList().get(i).getNombreFoto().equals(nombreFoto)) {
+                    empleado.getTblEmpleadosFotosList().remove(i);
+                }
+            }            
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Foto eliminada, guarde para que los cambios se reflejen");
+        }
+        if (message != null) {
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+
+    private static String getExtension(String filename) {
+        int index = filename.lastIndexOf('.');
+        if (index == -1) {
+            return "";
+        } else {
+            return filename.substring(index + 1);
+        }
+    }
+
+    @PreDestroy
+    public void cerrarConexion() {
+        if (genericDAO != null) {
+            genericDAO.closeDAO();
+        }
     }
 }

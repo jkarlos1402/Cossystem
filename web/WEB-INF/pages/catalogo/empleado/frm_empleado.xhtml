@@ -50,7 +50,7 @@
                         </p:outputPanel>  
                         <p:spacer/>
                         <p:spacer rendered="#{empleadoFrmBean.empleado.idEmpleado eq null or not empleadoFrmBean.permissionToWrite}"/>
-                        <p:fileUpload style="width: 100%; " styleClass="uploadFoto" 
+                        <p:fileUpload style="width: 100%; margin: auto;" styleClass="uploadFoto" 
                                       mode="advanced" auto="false" label="Elegir" uploadLabel="Subir" cancelLabel="Cancelar" 
                                       allowTypes="/(\.|\/)(JPE?G|jpe?g|png|PNG)$/" fileUploadListener="#{empleadoFrmBean.subirFoto}"
                                       sizeLimit="1048576" invalidFileMessage="S&oacute;lo se adminten imagnes .jpg o .png"

@@ -97,7 +97,7 @@
                 <ui:include src="frm_empleado.xhtml"/>                
             </p:dialog>                      
             <p:dialog modal="true" header="Consultar" appendTo="@(body)" closeOnEscape="true" id="dialogConsultaEmpleado" widgetVar="dialogConsultaEmpleado" maximizable="true" width="70%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" responsive="true">
-                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado"  process="@this" listener="#{empleadoTablaBean.refreshElementoCatalogo}" onstart="PF('blockTablaEmpleado').show();" oncomplete="PF('blockTablaEmpleado').hide();"/>
+                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado"  process="@this" listener="#{empleadoTablaBean.refreshElementoCatalogo}" onstart="PF('blockTablaEmpleado').show();" oncomplete="PF('blockTablaEmpleado').hide();PF('tablaEmpleado').filter();"/>
                 <ui:include src="AddFiltro_empleado.xhtml"/>                  
                 <f:facet name="footer">
                     <h:form>
@@ -106,7 +106,7 @@
                 </f:facet>
             </p:dialog>                      
             <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogCargaExcelEmpleado" widgetVar="dialogCargaExcelEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
-                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" process="@this"/>
+                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" process="@this" oncomplete="PF('tablaEmpleado').filter();"/>
                 <h:form id="frmDialogCargaExcel">
                     <p:fileUpload mode="advanced" label="Escoger" 
                                   uploadLabel="Subir" cancelLabel="Cancelar"

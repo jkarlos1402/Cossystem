@@ -276,26 +276,19 @@
                         <p:selectBooleanCheckbox id="isContactoEmpleado" value="#{empleadoFrmBean.empleado.contacto}" required="true" disabled="#{!empleadoFrmBean.permissionToWrite}"/>
 
                         <f:facet name="footer">
-                            <p:toolbar >
-                                <f:facet name="left">
-                                    <p:commandButton id="btnAgregaProspectos" value="Agregar Prospectos" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
-                                    <p:commandButton id="btnAgregaTareas" value="Agregar Tareas" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
-                                    <p:commandButton id="btnRegistroActividad" value="Registro de Actividad" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
-                                    <p:commandButton id="btnEnviar" value="Enviar" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
-                                    <span class="ui-separator">
-                                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
-                                    </span>
-                                    <p:commandButton id="btnImprimirReporte" icon="fa fa-fw fa-print" iconPos="left" value="Imprimir" rendered="#{empleadoFrmBean.permissionToWrite}"/>
-                                </f:facet>
-                                <f:facet name="right">                                                                 
-                                    <p:commandButton id="btnNuevoFrmEmpleado" value="Nuevo" process="@this" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="iconoNuevo" iconPos="left" action="#{empleadoFrmBean.nuevoElemento}" actionListener="#{principalBean.resetFormulario('formFrmEmpleado')}" rendered="#{empleadoFrmBean.permissionToWrite}">
-                                        <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
-                                    </p:commandButton> 
-                                    <p:commandButton id="btnGuardarEmpleado" value="Guardar" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="fa fa-fw fa-save" iconPos="left" actionListener="#{empleadoFrmBean.guardarElemento}" rendered="#{empleadoFrmBean.permissionToWrite}">
-                                        <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
-                                    </p:commandButton> 
-                                </f:facet>
-                            </p:toolbar>
+                            <p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1" styleClass="ui-panelgrid-blank" layout="grid">
+                                <p:commandButton id="btnAgregaProspectos" value="Agregar Prospectos" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnAgregaTareas" value="Agregar Tareas" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnRegistroActividad" value="Registro de Actividad" rendered="#{empleadoFrmBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnEnviar" value="Enviar" rendered="#{empleadoFrmBean.permissionToWrite}"/>                                            
+                                <p:commandButton id="btnImprimirReporte" icon="fa fa-fw fa-print" iconPos="left" value="Imprimir" rendered="#{empleadoFrmBean.permissionToWrite}"/>
+                                <p:commandButton id="btnNuevoFrmEmpleado" value="Nuevo" process="@this" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="iconoNuevo" iconPos="left" action="#{empleadoFrmBean.nuevoElemento}" actionListener="#{principalBean.resetFormulario('formFrmEmpleado')}" rendered="#{empleadoFrmBean.permissionToWrite}">
+                                    <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
+                                </p:commandButton> 
+                                <p:commandButton id="btnGuardarEmpleado" value="Guardar" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="fa fa-fw fa-save" iconPos="left" actionListener="#{empleadoFrmBean.guardarElemento}" rendered="#{empleadoFrmBean.permissionToWrite}">
+                                    <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
+                                </p:commandButton> 
+                            </p:panelGrid>                                    
                         </f:facet>
                     </p:panelGrid>
                     <p:blockUI block="formFrmEmpleado" trigger="btnGuardarEmpleado,btnCatalogoSexo">                    

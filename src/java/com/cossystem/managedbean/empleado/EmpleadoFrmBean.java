@@ -130,7 +130,7 @@ public class EmpleadoFrmBean implements Serializable {
                 empleado.setIdEmpresa(empresa);
             } else if (empleado.getIdEmpleado() == null) {
                 empleado.setIdEmpresa(empresa);
-            } else if (empleado.getIdEmpleado() != null) {
+            } else if (empleado.getIdEmpleado() != null) {                
                 genericDAO.getSession().refresh(empleado);
             }
             if (bndCatalogoEstados) {
@@ -737,8 +737,7 @@ public class EmpleadoFrmBean implements Serializable {
     }
 
     public void eliminaFoto(String nombreFoto) {
-        FacesMessage message = null;
-        System.out.println("nombre foto: "+nombreFoto);
+        FacesMessage message = null;       
         if (empleado.getTblEmpleadosFotosList() != null && !empleado.getTblEmpleadosFotosList().isEmpty()) {
             for (int i = 0; i < empleado.getTblEmpleadosFotosList().size(); i++) {
                 if (empleado.getTblEmpleadosFotosList().get(i).getNombreFoto().equals(nombreFoto)) {
@@ -762,9 +761,10 @@ public class EmpleadoFrmBean implements Serializable {
     }
 
     @PreDestroy
-    public void cerrarConexion() {
+    public void cerrarConexion() {        
         if (genericDAO != null) {
             genericDAO.closeDAO();
+            genericDAO = null;
         }
     }
 }

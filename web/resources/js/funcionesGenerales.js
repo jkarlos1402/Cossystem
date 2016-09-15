@@ -14,31 +14,31 @@ function muestraMensajeCargarExcel(idMensajes) {
         "severity": "info"});
 }
 
-function showBlockDescargaExcel() {
-    PF("blockTabla").show();
+function showBlockDescargaExcel(nombreBlock) {    
+    PF(nombreBlock).show();
 }
 
-function hideBlockDescargaExcel() {
-    PF("blockTabla").hide();
-    stop();
+function hideBlockDescargaExcel(nombreBlock) {    
+    PF(nombreBlock).hide();
+    borraTempExcel();
 }
 
-function myMonitorDownload(d, c) {
+function myMonitorDownload(d, c, nombreBlock) {   
     if (d) {
-        d();
+        d(nombreBlock);
     }
     var interval = setInterval(function () {
-        var value = $.cookie("primefaces.download");
-        console.log(value);
+        var value = $.cookie("primefaces.download");        
         if (value === "true") {
             if (c) {
-                c();
+                c(nombreBlock);
             }
             $.cookie("primefaces.download", null);
             clearInterval(interval);
         }
     }, 250);
 }
+
 function asignaListenerSlider() {
     $(".previous").on('click', function (e) {
         e.preventDefault();
@@ -47,6 +47,7 @@ function asignaListenerSlider() {
         e.preventDefault();
     });
 }
+
 function refrescaSlider() {
     $('.crsl-items').carousel({
         visible: 1,
@@ -54,6 +55,4 @@ function refrescaSlider() {
         itemEqualHeight: 160,
         itemMargin: 9
     });
-
-    console.log("ya se actualizo slider");
 }

@@ -149,9 +149,7 @@ public class EmpresaBean implements Serializable {
         if (empresaNueva == null) {
             empresaNueva = new TblEmpresa();
         }
-        Field[] campos = empresaNueva.getClass().getDeclaredFields();
-        System.out.println("empresa: " + empresaNueva);
-        System.out.println("empresa seleccionada: " + empresaSeleccionada);
+        Field[] campos = empresaNueva.getClass().getDeclaredFields();        
         for (Field campo : campos) {
             try {
                 if ((Modifier.PRIVATE + Modifier.STATIC + Modifier.FINAL) != campo.getModifiers()) {
@@ -161,41 +159,8 @@ public class EmpresaBean implements Serializable {
             } catch (IllegalArgumentException | IllegalAccessException ex) {
                 //to do
             }
-        }
-        System.out.println("empresa1: " + empresaNueva);
-        System.out.println("empresa seleccionada1: " + empresaSeleccionada);
+        }        
     }
-//
-//    public void cerroDialog() {
-//        RequestContext.getCurrentInstance().reset("formOrderNotas:panelFormOrderNotas");
-//    }
-//
-//    public void eliminaNota() {
-//        FacesMessage message;
-//        GenericDAO genericDAO = null;
-//        if (notaSeleccionada != null) {
-//            try {
-//                genericDAO = new GenericDAO();
-//                genericDAO.delete(notaSeleccionada);
-//                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "The record has been deleted");
-//            } catch (DAOException ex) {
-//                Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//                message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-//            } catch (DataBaseException ex) {
-//                Logger.getLogger(NotasBean.class.getName()).log(Level.SEVERE, null, ex);
-//                message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-//            } finally {
-//                refreshNotas();
-//                if (genericDAO != null) {
-//                    genericDAO.closeDAO();
-//                }
-//            }
-//        } else {
-//            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Sorry", "Not element selected");
-//        }
-//        FacesContext.getCurrentInstance().addMessage(null, message);
-//    }
-//
 
     public TblEmpresa getEmpresaNueva() {
         return empresaNueva;

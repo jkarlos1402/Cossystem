@@ -11,22 +11,22 @@
     <h:body>
         <ui:composition>              
             <h:form id="formPrincipalEmpleado">
-                <p:growl showDetail="true" id="mensajesEmpleado" widgetVar="mensajesEmpleado"/>            
+                <p:growl showDetail="true" id="mensajesEmpleado" widgetVar="mensajesEmpleado" life="20000"/>            
                 <p:tooltip showEffect="fade" hideEffect="fade"/>            
 
                 <p:toolbar id="toolBarEmpleado">
                     <f:facet name="left"> 
                         <h:panelGrid columns="18" >
-                            <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="iconoNuevo" title="Nuevo" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}"/>
-                            <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="iconoVer" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
+                            <p:commandButton id="btnNuevoEmpleadoTool" widgetVar="btnNuevoEmpleadoTool" icon="iconoNuevo" title="Nuevo" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','nuevo')}" update="dialogFrmEmpleado,tablaEmpleado"/>
+                            <p:commandButton id="btnDetalleEmpleadoTool" widgetVar="btnDetalleEmpleadoTool" icon="iconoVer" title="Ver" update="dialogFrmEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
                             <p:commandButton id="btnEditarEmpleadoTool" widgetVar="btnEditarEmpleadoTool" icon="fa fa-fw fa-edit" title="Editar" update="dialogFrmEmpleado,:formPrincipalEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado','editar')}"/>                        
-                            <p:commandButton id="btnEliminarEmpleadoTool" widgetVar="btnEliminarEmpleadoTool" icon="fa fa-fw fa-trash-o" title="Eliminar" update=":formPrincipalEmpleado" action="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
+                            <p:commandButton id="btnEliminarEmpleadoTool" widgetVar="btnEliminarEmpleadoTool" icon="fa fa-fw fa-trash-o" title="Eliminar" update=":formPrincipalEmpleado" actionListener="#{empleadoTablaBean.eliminaElemento('tablaEmpleado')}">
                                 <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>
                             </p:commandButton>                        
                             <span class="ui-separator">
                                 <span class="ui-icon ui-icon-grip-dotted-vertical"/>
                             </span>
-                            <p:commandButton id="btnRefreshEmpleadoTool" widgetVar="btnRefreshEmpleadoTool" icon="fa fa-fw fa-refresh" title="Actualizar" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}"/>
+                                <p:commandButton id="btnRefreshEmpleadoTool" widgetVar="btnRefreshEmpleadoTool" icon="fa fa-fw fa-refresh" title="Actualizar" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}" oncomplete="PF('tablaEmpleado').filter();"/>
                             <p:lightBox iframe="true" width="100%" height="100%" iframeTitle="Reporte">                            
                                 <p:commandButton id="btnReporteEmpleadoTool" widgetVar="btnReporteEmpleadoTool" icon="fa fa-fw fa-print" title="Imprimir" update="mensajesEmpleado">
                                     <h:outputLink value="#{request.contextPath}/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
@@ -37,12 +37,12 @@
                                     <h:outputLink value="#{request.contextPath}/reports/rpt_empleado.xhtml" title="Reporte"/>                                  
                                 </p:commandButton>                                
                             </p:lightBox>
-                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel"  onclick="PrimeFaces.monitorDownload(showBlockDescargaExcel, hideBlockDescargaExcel);muestraMensajeDescargaExcel('mensajesEmpleado');">
+                            <p:commandButton id="btnDescExcelEmpleadoTool" ajax="false" widgetVar="btnDescExcelEmpleadoTool" icon="iconoDescargar" title="Descargar Excel"  onclick="myMonitorDownload(showBlockDescargaExcel, hideBlockDescargaExcel,'blockTablaEmpleado');muestraMensajeDescargaExcel('mensajesEmpleado');">
                                 <p:fileDownload value="#{empleadoTablaBean.fileExcel}" contentDisposition="attachment"/>
                             </p:commandButton>                             
                             <p:commandButton id="btnSubirExcelEmpleadoTool" widgetVar="btnSubirExcelEmpleadoTool" icon="iconoCargar" title="Cargar excel" update="dialogCargaExcelEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogCargaExcelEmpleado','cargaExcel')}"/>
                             <p:commandButton id="btnConsultarEmpleadoTool" widgetVar="btnConsultarEmpleadoTool" icon="iconoFiltro" title="Consultar" update="dialogConsultaEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.openDialogFrmElemento('dialogConsultaEmpleado','consulta')}"/>
-                            <p:commandButton id="btnTodosEmpleadoTool" widgetVar="btnTodosEmpleadoTool" icon="iconoCancelar" title="Quitar filtro" update="tablaEmpleado,dialogConsultaEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.todosLosRegistros}"/>                            
+                            <p:commandButton id="btnTodosEmpleadoTool" widgetVar="btnTodosEmpleadoTool" icon="iconoCancelar" title="Quitar filtro" update="tablaEmpleado,dialogConsultaEmpleado,mensajesEmpleado" actionListener="#{empleadoTablaBean.todosLosRegistros}" oncomplete="PF('tablaEmpleado').filter();"/>                            
                             <span class="ui-separator">
                                 <span class="ui-icon ui-icon-grip-dotted-vertical"/>
                             </span>
@@ -50,8 +50,9 @@
                             <p:commandButton id="btnAgregaProspectosEmpleadoTool" value="Agregar Prospectos"/>    
                             <p:commandButton id="btnAgregaTareasEmpleadoTool" value="Agregar Tareas" />    
                             <p:commandButton id="btnRegistroActividadEmpleadoTool" value="Registro de Actividad"/>                                                                                            
-                            <p:remoteCommand name="stop" actionListener="#{empleadoTablaBean.borraTempExcel}"/>
-                        </h:panelGrid>
+                            <p:remoteCommand name="borraTempExcel" actionListener="#{empleadoTablaBean.borraTempExcel}"/>
+                            <p:remoteCommand id="remoteRefreshTool" name="refrescaTablaEmpleado" update="tablaEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.refreshElementoCatalogo}" oncomplete="PF('tablaEmpleado').filter();"/>
+                        </h:panelGrid>                        
                     </f:facet>                    
                 </p:toolbar>                
                 <p:dataTable id="tablaEmpleado" draggableColumns="true" resizableColumns="true" resizeMode="true" value="#{empleadoTablaBean.elementoCatalogo}" var="empleado" rowKey="#{empleado.idEmpleado}" widgetVar="tablaEmpleado" selectionMode="single" selection="#{empleadoTablaBean.elementoSeleccionado}" style="margin-top: 10px;" paginator="true" rows="10" rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
@@ -71,8 +72,8 @@
                         <h:outputText value="#{empleado.nombre}" />
                     </p:column>
 
-                    <p:ajax event="rowSelect" update="dialogFrmEmpleado" listener="#{empleadoTablaBean.selectElemento}"/>
-                    <p:ajax event="contextMenu" update="dialogFrmEmpleado" listener="#{empleadoTablaBean.selectElemento}"/> 
+                    <p:ajax event="rowSelect" listener="#{empleadoTablaBean.selectElemento}"/>
+                    <p:ajax event="contextMenu" listener="#{empleadoTablaBean.selectElemento}"/> 
                 </p:dataTable>
                 <p:contextMenu for="tablaEmpleado">
                     <p:menuitem id="btnDetalleEmpleado" value="Ver" icon="fa fa-fw fa-eye" update="dialogFrmEmpleado,mensajesEmpleado" action="#{empleadoTablaBean.openDialogFrmElemento('dialogFrmEmpleado', 'ver')}"/>
@@ -81,7 +82,7 @@
                         <p:confirm header="Eliminar" message="&iquest;Est&aacute; seguro?"/>                        
                     </p:menuitem>
                 </p:contextMenu>                
-                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleado,btnRefreshEmpleadoTool,btnDescExcelEmpleadoTool,btnConsultarEmpleadoTool,btnTodosEmpleadoTool" widgetVar="blockTablaEmpleado">                   
+                <p:blockUI block="formPrincipalEmpleado" trigger="btnNuevoEmpleadoTool,btnEditarEmpleadoTool,btnEditarEmpleado,btnEliminarEmpleadoTool,btnEliminarEmpleado,btnDetalleEmpleadoTool,btnDetalleEmpleado,btnRefreshEmpleadoTool,btnDescExcelEmpleadoTool,btnConsultarEmpleadoTool,btnTodosEmpleadoTool,remoteRefreshTool" widgetVar="blockTablaEmpleado">                   
                     <p style="font-size:14px; color: black;">
                         Cargando...
                     </p> 
@@ -93,11 +94,11 @@
 
             </h:form>
             <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogFrmEmpleado" widgetVar="dialogFrmEmpleado" maximizable="true" width="80%" styleClass="dialogStyle" height="auto" resizable="true" draggable="false" dynamic="true" responsive="true">
-                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" process="@this" oncomplete="PF('tablaEmpleado').filter();"/>
+                <p:ajax event="close" listener="#{empleadoTablaBean.cerroDialogElemento('formFrmEmpleado')}" oncomplete="refrescaTablaEmpleado();"/>
                 <ui:include src="frm_empleado.xhtml"/>                
             </p:dialog>                      
             <p:dialog modal="true" header="Consultar" appendTo="@(body)" closeOnEscape="true" id="dialogConsultaEmpleado" widgetVar="dialogConsultaEmpleado" maximizable="true" width="70%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" responsive="true">
-                <p:ajax event="close" update=":formFrmEmpleado,:formPrincipalEmpleado:tablaEmpleado"  process="@this" listener="#{empleadoTablaBean.refreshElementoCatalogo}" onstart="PF('blockTablaEmpleado').show();" oncomplete="PF('blockTablaEmpleado').hide();PF('tablaEmpleado').filter();"/>
+                <p:ajax event="close" oncomplete="refrescaTablaEmpleado();"/>
                 <ui:include src="AddFiltro_empleado.xhtml"/>                  
                 <f:facet name="footer">
                     <h:form>
@@ -106,7 +107,7 @@
                 </f:facet>
             </p:dialog>                      
             <p:dialog modal="true" appendTo="@(body)" closeOnEscape="true" id="dialogCargaExcelEmpleado" widgetVar="dialogCargaExcelEmpleado" maximizable="true" width="80%" minWidth="780" styleClass="dialogStyle" height="auto" resizable="false" draggable="false" dynamic="true" >
-                <p:ajax event="close" update=":formFrmEmpleado" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" process="@this" oncomplete="PF('tablaEmpleado').filter();"/>
+                <p:ajax event="close" listener="#{empleadoTablaBean.cerroDialogElemento('frmDialogCargaExcel')}" oncomplete="refrescaTablaEmpleado();"/>
                 <h:form id="frmDialogCargaExcel">
                     <p:fileUpload mode="advanced" label="Escoger" 
                                   uploadLabel="Subir" cancelLabel="Cancelar"
@@ -114,7 +115,7 @@
                                   sizeLimit="100000000" fileLimit="20" 
                                   allowTypes="/(\.|\/)(xlsx|XLSX)$/"
                                   invalidFileMessage="Favor de seleccionar un archivo con extensi&oacute;n .xlxs"
-                                  update=":formPrincipalEmpleado:mensajesEmpleado,:formPrincipalEmpleado:tablaEmpleado"
+                                  update=":formPrincipalEmpleado:mensajesEmpleado"
                                   onstart="muestraMensajeCargarExcel('mensajesEmpleado');PF('blockTablaCargaExcel').show();"
                                   oncomplete="PF('blockTablaCargaExcel').hide();PF('dialogCargaExcelEmpleado').hide();"/>
                 </h:form>  

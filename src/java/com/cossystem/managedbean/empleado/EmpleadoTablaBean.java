@@ -135,8 +135,8 @@ public class EmpleadoTablaBean implements Serializable {
 
     public void nuevoElemento() {
         elementoSeleccionado = null;
-        elementoNuevo = new TblEmpleados();
-        empleadoFrmBean.setEmpleado(elementoNuevo);
+        elementoNuevo = null;
+        empleadoFrmBean.setEmpleado(null);
         empleadoFrmBean.setPermissionToWrite(true);
         empleadoFrmBean.init();
         empleadoFrmBean.setNombreAccionFrm("Cat\u00E1logo de Empleados - Agregar registro");
@@ -166,7 +166,7 @@ public class EmpleadoTablaBean implements Serializable {
         }
     }
 
-    public void selectElemento() {
+    public void selectElemento() {        
         FacesMessage message = null;
         if (elementoNuevo == null) {
             elementoNuevo = new TblEmpleados();
@@ -195,6 +195,7 @@ public class EmpleadoTablaBean implements Serializable {
 
     public void cerroDialogElemento(String nombreFormulario) {
         RequestContext.getCurrentInstance().reset(nombreFormulario);
+        empleadoFrmBean.cerrarConexion();
     }
 
     public void eliminaElemento(final String nombreTabla) {
@@ -208,7 +209,7 @@ public class EmpleadoTablaBean implements Serializable {
                 Integer idEliminado = elementoSeleccionado.getIdEmpleado();
                 genericDAO.delete(elementoSeleccionado);
                 File dirFotos = new File(properties.getProperty("fotosPath") + File.separator + idEliminado);
-                if(dirFotos.isDirectory()){
+                if (dirFotos.isDirectory()) {
                     dirFotos.delete();
                 }
                 message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "El elemento ha sido eliminado");

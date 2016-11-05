@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:crystal="http://www.businessobjects.com/jsf/crystalreportsviewers">
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+            <title>Cos Admin</title>            
+        </f:facet>
+        <f:facet name="last">
+            <h:outputStylesheet name="css/estilosGenerales.css" />
+            <h:outputStylesheet name="css/jcarousel.responsive.css"  />
+            <h:outputScript name="js/jquery.jcarousel.min.js"/>
+            <h:outputScript name="js/jcarousel.responsive.js"/>
+            <h:outputScript name="js/funcionesGenerales.js"/>
+        </f:facet>
+    </h:head>
+    <h:body>
+        <div class="ui-g contenidoHome">
+            <div class="ui-g-12">
+                <p:growl />
+                <ui:insert name="encabezado">
+                    Aqui va el encabezado
+                </ui:insert>
+            </div>
+            <div class="ui-g-12 ui-g-nopad">
+                <div class="ui-g">
+                    <div class="ui-g-12 ui-md-2">                        
+                        <h:form id="formMenuPrincipal">
+                            <p:growl />
+                            <ul  id="menuGeneralDinamico" >
+                                <c:forEach items="#{principalBean.menuCompleto}" var="menuItem">
+                                    <ui:include src="/pages/generadorMenu.xhtml">
+                                        <ui:param name="menuItem" value="#{menuItem}"/>
+                                    </ui:include>
+                                </c:forEach>                                
+                            </ul>                         
+                        </h:form>
+                    </div>
+                    <div class="ui-g-12 ui-md-10">
+                        <ui:insert name="areaTrabajo">
+                            <p:panel id="contenidoTrabajo">
+                                <c:choose>
+                                    <c:when test="#{rutaPaginaBean.rutaPagina ne null and rutaPaginaBean.rutaPagina ne '/blank.xhtml'}" >
+                                        <ui:include src="#{rutaPaginaBean.rutaPagina}"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        Contenido de inicio
+                                    </c:otherwise>
+                                </c:choose>                                                            
+                            </p:panel>                            
+                        </ui:insert>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>

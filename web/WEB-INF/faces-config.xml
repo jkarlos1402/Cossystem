@@ -25,6 +25,24 @@
             <to-view-id>/login.xhtml</to-view-id>
         </navigation-case>        
     </navigation-rule>   
+    <navigation-rule>
+        <from-view-id>/home.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>#</from-outcome>
+            <to-view-id>/home.xhtml</to-view-id>
+        </navigation-case>        
+    </navigation-rule>   
+    <navigation-rule>
+        <from-view-id>/pages/*</from-view-id>
+        <navigation-case>
+            <from-outcome>#</from-outcome>
+            <to-view-id>/home.xhtml</to-view-id>
+        </navigation-case>        
+        <navigation-case>
+            <from-outcome>#{principalBean.rutaPagina}</from-outcome>
+            <to-view-id>/#{principalBean.rutaPagina}.xhtml</to-view-id>
+        </navigation-case>        
+    </navigation-rule>   
     <component>
         <component-type>com.crystaldecisions.report.web.jsf.JSFViewerTag</component-type>
         <component-class>

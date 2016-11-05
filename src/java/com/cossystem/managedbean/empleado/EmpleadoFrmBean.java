@@ -6,28 +6,28 @@
 package com.cossystem.managedbean.empleado;
 
 import com.cossystem.core.dao.GenericDAO;
-import com.cossystem.core.dao.catalogo.TblEmpleadosDAO;
+import com.cossystem.core.dao.TblEmpleadosDAO;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
-import com.cossystem.core.pojos.catalogos.CatArea;
-import com.cossystem.core.pojos.catalogos.CatCECO;
-import com.cossystem.core.pojos.catalogos.CatCPESTADO;
-import com.cossystem.core.pojos.catalogos.CatDepartamento;
-import com.cossystem.core.pojos.catalogos.CatEmpNivel;
-import com.cossystem.core.pojos.catalogos.CatEmpOrigen;
-import com.cossystem.core.pojos.catalogos.CatEmpPuestos;
-import com.cossystem.core.pojos.catalogos.CatSexo;
-import com.cossystem.core.pojos.catalogos.CatStatus;
-import com.cossystem.core.pojos.catalogos.CatTipoConexion;
-import com.cossystem.core.pojos.catalogos.CatUbicacion;
-import com.cossystem.core.pojos.catalogos.CatUsuarios;
-import com.cossystem.core.pojos.empleado.TblEmpleados;
-import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividad;
-import com.cossystem.core.pojos.empleado.TblEmpleadosDiarioActividadDet;
-import com.cossystem.core.pojos.empleado.TblEmpleadosFotos;
-import com.cossystem.core.pojos.empresa.TblEmpresa;
-import com.cossystem.core.pojos.empresa.TblEmpresaPosicion;
-import com.cossystem.core.pojos.empresa.TblEmpresaProyectos;
+import com.cossystem.core.pojos.CatArea;
+import com.cossystem.core.pojos.CatCECO;
+import com.cossystem.core.pojos.CatCPESTADO;
+import com.cossystem.core.pojos.CatDepartamento;
+import com.cossystem.core.pojos.CatEmpNivel;
+import com.cossystem.core.pojos.CatEmpOrigen;
+import com.cossystem.core.pojos.CatEmpPuestos;
+import com.cossystem.core.pojos.CatSexo;
+import com.cossystem.core.pojos.CatStatus;
+import com.cossystem.core.pojos.CatTipoConexion;
+import com.cossystem.core.pojos.CatUbicacion;
+import com.cossystem.core.pojos.CatUsuarios;
+import com.cossystem.core.pojos.TblEmpleados;
+import com.cossystem.core.pojos.TblEmpleadosDiarioActividad;
+import com.cossystem.core.pojos.TblEmpleadosDiarioActividadDet;
+import com.cossystem.core.pojos.TblEmpleadosFotos;
+import com.cossystem.core.pojos.TblEmpresa;
+import com.cossystem.core.pojos.TblEmpresaPosicion;
+import com.cossystem.core.pojos.TblEmpresaProyectos;
 import com.cossystem.managedbean.PrincipalBean;
 import com.cossystem.util.Propiedades;
 import java.io.File;
@@ -71,6 +71,7 @@ public class EmpleadoFrmBean implements Serializable {
     private String tituloSubCatalogo = "";
     private String nombreAccionFrm = "";
 
+    private Integer idElemento;
     private TblEmpleados empleado;
 
     private List<TblEmpleados> catalogoContacto;
@@ -116,7 +117,6 @@ public class EmpleadoFrmBean implements Serializable {
     @PostConstruct
     public void init() {
         TreeMap mapaComponentes = new TreeMap<>();
-
         try {
             if (genericDAO == null) {
                 genericDAO = new TblEmpleadosDAO();
@@ -758,6 +758,14 @@ public class EmpleadoFrmBean implements Serializable {
         } else {
             return filename.substring(index + 1);
         }
+    }
+
+    public Integer getIdElemento() {
+        return idElemento;
+    }
+
+    public void setIdElemento(Integer idElemento) {
+        this.idElemento = idElemento;
     }
 
     @PreDestroy

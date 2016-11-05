@@ -1,5 +1,16 @@
 $(document).ready(function () {
     $.cookie("primefaces.download", null);
+
+    $('.navbar-toggle').click(function () {
+        $('.navbar-nav').toggleClass('slide-in');
+        $('.side-body').toggleClass('body-slide-in');
+        $('#search').removeClass('in').addClass('collapse').slideUp(200);
+
+        /// uncomment code for absolute positioning tweek see top comment in css
+        //$('.absolute-wrapper').toggleClass('slide-in');
+        
+    });
+      
 });
 
 function muestraMensajeDescargaExcel(idMensajes) {
@@ -14,21 +25,21 @@ function muestraMensajeCargarExcel(idMensajes) {
         "severity": "info"});
 }
 
-function showBlockDescargaExcel(nombreBlock) {    
+function showBlockDescargaExcel(nombreBlock) {
     PF(nombreBlock).show();
 }
 
-function hideBlockDescargaExcel(nombreBlock) {    
+function hideBlockDescargaExcel(nombreBlock) {
     PF(nombreBlock).hide();
     borraTempExcel();
 }
 
-function myMonitorDownload(d, c, nombreBlock) {   
+function myMonitorDownload(d, c, nombreBlock) {
     if (d) {
         d(nombreBlock);
     }
     var interval = setInterval(function () {
-        var value = $.cookie("primefaces.download");        
+        var value = $.cookie("primefaces.download");
         if (value === "true") {
             if (c) {
                 c(nombreBlock);

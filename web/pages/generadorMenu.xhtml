@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>           
+            <!--<c:if test="comprobar q tenga permiso">-->
+            <li class="#{menuItem.menusHijo ne null and !menuItem.menusHijo.isEmpty() ? 'panel panel-default' : ''}"
+                id="#{menuItem.menusHijo ne null and !menuItem.menusHijo.isEmpty() ? 'dropdown' : ''}">              
+                <c:choose>
+                    <c:when test="#{menuItem.menusHijo ne null and !menuItem.menusHijo.isEmpty()}">
+                        <a data-toggle="collapse" href="#dropdown-#{menuItem.idMenu}">
+                            #{menuItem.descripcion} <span class="caret"></span>
+                        </a>
+                        <div id="dropdown-#{menuItem.idMenu}" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav navbar-nav">
+                                    <c:forEach var="item" items="#{menuItem.menusHijo}">                                
+                                        <ui:include  src="generadorMenu.xhtml"> 
+                                            <ui:param name="menuItem" value="#{item}"/>
+                                        </ui:include>                                                                    
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>                        
+                    </c:when>
+                    <c:otherwise>
+                        <p:commandLink actionListener="#{rutaPaginaBean.cambiaContenido}" update="contenidoTrabajo" onclick="#{menuItem.menusHijo ne null and !menuItem.menusHijo.isEmpty() ? 'PF(\'blockContenidoTrabajo\').show();return false;' : 'PF(\'blockContenidoTrabajo\').show();'}"
+                                       oncomplete="PF('blockContenidoTrabajo').hide();">
+                            <f:param name="nombreRuta" value="#{menuItem.urlJava}" />
+                            <f:param name="idMenu" value="#{menuItem.idMenu}" />
+                            #{menuItem.descripcion}
+                        </p:commandLink> 
+                    </c:otherwise>
+                </c:choose>
+
+                <c:if test="#{menuItem.menusHijo ne null and !menuItem.menusHijo.isEmpty()}">                       
+
+                </c:if>                
+            </li>
+            <!--</c:if>-->             
+        </ui:composition>
+    </h:body>
+</html>
+

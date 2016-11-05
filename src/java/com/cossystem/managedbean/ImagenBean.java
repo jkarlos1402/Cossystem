@@ -6,7 +6,7 @@
 package com.cossystem.managedbean;
 
 import com.cossystem.core.dao.GenericDAO;
-import com.cossystem.core.pojos.catalogos.CatUsuarios;
+import com.cossystem.core.pojos.CatUsuarios;
 import com.cossystem.util.Propiedades;
 import java.io.File;
 import java.io.FileInputStream;

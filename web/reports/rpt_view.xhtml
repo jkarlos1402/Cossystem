@@ -10,17 +10,15 @@
     </h:head>
     <h:body>
         <ui:composition>            
-            <h:form>                
-                <crystal:reportPageViewer viewerName="Reporte empleado"  
-                                          reportSource="#{reportBean.obtieneReporte('RPT_Cat_CP_ESTADO')}"                                         
+            <h:form id="formReporte">                                     
+                <crystal:reportPageViewer reportSource="#{reportGenericBean.obtieneReporte(request.getParameter('nombreReporte'))}"                                         
                                           enablePageToGrow="false" height="540"  
                                           zoomPercentage="100"  
                                           displayToolbarLogo="false"
                                           displayToolbarPrintButton="true"
                                           displayPage="true"
-                                          displayToolbarRefreshButton="true"
-                                          displayToolbarToggleTreeButton="false"
-                                           />
+                                          displayToolbarToggleTreeButton="false"                                          
+                                          />
             </h:form>
         </ui:composition>
     </h:body>

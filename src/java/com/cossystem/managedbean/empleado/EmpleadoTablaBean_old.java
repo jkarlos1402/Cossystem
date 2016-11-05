@@ -1,76 +1,92 @@
 package com.cossystem.managedbean.empleado;
 
+import com.cossystem.core.dao.GenericDAO;
 import com.cossystem.core.exception.CossException;
 import com.cossystem.core.exception.DAOException;
 import com.cossystem.core.exception.DataBaseException;
+import com.cossystem.core.pojos.TblAccesoPantallas;
+import com.cossystem.core.pojos.TblAccesoPantallasCampos;
+import com.cossystem.core.pojos.CatUsuarios;
+import com.cossystem.core.util.Configuracion;
+import com.cossystem.core.util.Filtro;
+import com.cossystem.core.util.ManagerXLSX;
 import com.cossystem.managedbean.PrincipalBean;
-import com.cossystem.managedbean.GenericTablaBean;
+import com.cossystem.managedbean.filtro.FiltroEntidad;
+import com.cossystem.core.util.Columnas;
 import com.cossystem.util.Propiedades;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.servlet.ServletContext;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
-@ManagedBean
-@ViewScoped
-public class EmpleadoTablaBean extends GenericTablaBean implements Serializable {
-    
-    @ManagedProperty(value = "#{principalBean}")
-    private PrincipalBean principalBean;
-    
-    @ManagedProperty(value = "#{filtroEmpleadoBean}")
-    FiltroEmpleadoBean filtroEmpleadoBean;
-    
-    @ManagedProperty(value = "#{frmEmpleadoBean}")
-    FrmEmpleadoBean frmEmpleadoBean;
+//@ManagedBean
+//@ViewScoped
+public class EmpleadoTablaBean_old implements Serializable {
 
-    /**
-     * Creates a new instance of AlertasBean
-     */
-    public EmpleadoTablaBean() {
-        super();
-    }
-    
-    @Override
-    public void init() {
-        super.init();
-        refreshElementoCatalogo();
-    }
-    
-    public PrincipalBean getPrincipalBean() {
-        return principalBean;
-    }
-    
-    public void setPrincipalBean(PrincipalBean principalBean) {
-        this.principalBean = principalBean;
-    }
-    
-    public FiltroEmpleadoBean getFiltroEmpleadoBean() {
-        return filtroEmpleadoBean;
-    }
-    
-    public void setFiltroEmpleadoBean(FiltroEmpleadoBean filtroEmpleadoBean) {
-        this.filtroEmpleadoBean = filtroEmpleadoBean;
-    }
-    
-    public FrmEmpleadoBean getFrmEmpleadoBean() {
-        return frmEmpleadoBean;
-    }
-    
-    public void setFrmEmpleadoBean(FrmEmpleadoBean frmEmpleadoBean) {
-        this.frmEmpleadoBean = frmEmpleadoBean;
-    }
-    
-    public void todosLosRegistros() {
-        super.todosLosRegistros(frmEmpleadoBean, filtroEmpleadoBean);
-    }
+//    private CatUsuarios usuarioSesion;
+//    private StreamedContent fileExcel;
+//    private String nombreArchivo;
+//    private int idMenu;
+//    private TblAccesoPantallas menuOrigen;
+//    private List<TblAccesoPantallasCampos> configuracionPantalla;
+//    private List<TblAccesoPantallasCampos> configuracionPantallaTransaccional;
+//    private List<Filtro> filtros = null;
+//
+//    private Integer idElementoSeleccionado;
+//    private Object elementoSeleccionado;
+//    private Class claseElemento;
+//    private Field campoIdElemento;
+//    private Class claseElementoTransaccional;
+//    private Field campoIdElementoTransaccional;
+//    private List<?> elementoCatalogo;
+//    private List<Columnas> columnas;
+//
+//    @ManagedProperty(value = "#{principalBean}")
+//    private PrincipalBean principalBean;
+//
+//    @ManagedProperty(value = "#{empleadoFrmBean}")
+//    private EmpleadoFrmBean empleadoFrmBean;
+//
+//    @ManagedProperty(value = "#{filtroEntidadTblEmpleados}")
+//    private FiltroEntidad filtroEntidad;
+//
+//    /**
+//     * Creates a new instance of AlertasBean
+//     */
+//    public EmpleadoTablaBean_old() {
+//
+//    }
+//
 //    @PostConstruct
 //    public void init() {
 //        usuarioSesion = principalBean.getUsuarioSesion();
@@ -155,7 +171,7 @@ public class EmpleadoTablaBean extends GenericTablaBean implements Serializable 
 //        }
 //        refreshElementoCatalogo();
 //    }
-
+//
 //    private TblAccesoPantallas obtieneMenu(TblAccesoPantallas menuTemp, List<TblAccesoPantallas> menuTodo) {
 //        TblAccesoPantallas menuObtenido = null;
 //        for (TblAccesoPantallas tblAccesoPantallas : menuTodo) {
@@ -459,50 +475,108 @@ public class EmpleadoTablaBean extends GenericTablaBean implements Serializable 
 //            file.delete();
 //        }
 //    }
-    public void handleFileExcel(FileUploadEvent event) {
-        super.handleFileExcel(event, frmEmpleadoBean, filtroEmpleadoBean);
-    }
-    
-    public StreamedContent getFileExcel() {
-        return super.getFileExcel(filtroEmpleadoBean);
-    }
-    
-    public String generaExcelElemento() throws DAOException, DataBaseException, CossException, IOException {
-        return super.generaExcelElemento(filtroEmpleadoBean);
-    }
-    
-    public void eliminaElemento(String nombreTabla) {
-        FacesMessage message;
-        Properties properties;
-        try {
-            properties = Propiedades.obtienePropiedades();
-            campoIdElemento.setAccessible(true);
-            Integer idEliminado = campoIdElemento.getInt(elementoSeleccionado);
-            super.eliminaElemento(nombreTabla, frmEmpleadoBean, filtroEmpleadoBean);
-            File dirFotos = new File(properties.getProperty("fotosPath") + File.separator + idEliminado);
-            if (dirFotos.isDirectory()) {
-                dirFotos.delete();
-            }
-            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "El elemento ha sido eliminado");
-        } catch (IOException | IllegalArgumentException | IllegalAccessException ex) {
-            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", ex.getMessage());
-        }
-        FacesContext.getCurrentInstance().addMessage(null, message);
-    }
-    
-    public void cerroDialogElemento(String nombreFormulario) {
-        super.cerroDialogElemento(nombreFormulario, frmEmpleadoBean);
-    }
-    
-    public void refreshElementoCatalogo() {
-        super.refreshElementoCatalogo(frmEmpleadoBean, filtroEmpleadoBean, true);
-    }
-    
-    public void nuevoElemento() {
-        super.nuevoElemento(frmEmpleadoBean);
-    }
-    
-    public void openDialogFrmElemento(String nombreDialog, String tipoOperacion) {
-        super.openDialogFrmElemento(nombreDialog, tipoOperacion, frmEmpleadoBean, filtroEmpleadoBean);
-    }
+//
+//    public void handleFileExcel(FileUploadEvent event) {
+//        FacesMessage message;
+//        FacesContext context = FacesContext.getCurrentInstance();
+//        OutputStream outputStream = null;
+//        InputStream inputStream = null;
+//        File archivoTemp = null;
+//        try {
+//            UploadedFile file = event.getFile();
+//            ServletContext servletContext = (ServletContext) context.getExternalContext().getContext();
+//            String contextPathResources = servletContext.getRealPath("");
+//            File dirTemp = new File(contextPathResources + File.separator + "tempCargaExcel");
+//            if (!dirTemp.isDirectory()) {
+//                dirTemp.mkdirs();
+//            }
+//            String rutaArchivoTemp = contextPathResources + File.separator + "tempCargaExcel" + File.separator + "tempCarga" + Calendar.getInstance().getTimeInMillis() + ".xlsx";
+//            archivoTemp = new File(rutaArchivoTemp);
+//            outputStream = new FileOutputStream(archivoTemp);
+//            inputStream = event.getFile().getInputstream();
+//            int read = 0;
+//            byte[] bytes = new byte[1024];
+//            while ((read = inputStream.read(bytes)) != -1) {
+//                outputStream.write(bytes, 0, read);
+//            }
+//            ManagerXLSX.cargaCatalogoExcel(claseElementoTransaccional, rutaArchivoTemp);
+//            refreshElementoCatalogo();
+//            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Terminado", "La carga del archivo excel se realiz\u00f3 correctamente");
+//        } catch (CossException | IOException ex) {
+//            message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + ex.getMessage());
+//        } finally {
+//            if (inputStream != null) {
+//                try {
+//                    inputStream.close();
+//                } catch (IOException e) {
+//                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + e.getMessage());
+//                }
+//            }
+//            if (outputStream != null) {
+//                try {
+//                    outputStream.close();
+//                } catch (IOException e) {
+//                    message = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "La carga del archivo excel fall\u00f3: " + e.getMessage());
+//                }
+//
+//            }
+//            if (archivoTemp != null) {
+//                archivoTemp.delete();
+//            }
+//        }
+//        context.addMessage(null, message);
+//    }
+//
+//    public FiltroEntidad getFiltroEntidad() {
+//        return filtroEntidad;
+//    }
+//
+//    public void setFiltroEntidad(FiltroEntidad filtroEntidad) {
+//        this.filtroEntidad = filtroEntidad;
+//    }
+//
+//    public void todosLosRegistros() {
+//        filtroEntidad.init();
+//        refreshElementoCatalogo();
+//    }
+//
+//    public TblAccesoPantallas getMenuOrigen() {
+//        return menuOrigen;
+//    }
+//
+//    public void setMenuOrigen(TblAccesoPantallas menuOrigen) {
+//        this.menuOrigen = menuOrigen;
+//    }
+//
+//    public List<TblAccesoPantallasCampos> getConfiguracionPantalla() {
+//        return configuracionPantalla;
+//    }
+//
+//    public void setConfiguracionPantalla(List<TblAccesoPantallasCampos> configuracionPantalla) {
+//        this.configuracionPantalla = configuracionPantalla;
+//    }
+//
+//    public Field getCampoIdElemento() {
+//        return campoIdElemento;
+//    }
+//
+//    public void setCampoIdElemento(Field campoIdElemento) {
+//        this.campoIdElemento = campoIdElemento;
+//    }
+//
+//    public Field getCampoIdElementoTransaccional() {
+//        return campoIdElementoTransaccional;
+//    }
+//
+//    public void setCampoIdElementoTransaccional(Field campoIdElementoTransaccional) {
+//        this.campoIdElementoTransaccional = campoIdElementoTransaccional;
+//    }
+//
+//    public List<Columnas> getColumnas() {
+//        return columnas;
+//    }
+//
+//    public void setColumnas(List<Columnas> columnas) {
+//        this.columnas = columnas;
+//    }
 }

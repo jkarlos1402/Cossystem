@@ -1,43 +1,42 @@
-package com.cossystem.managedbean.filtro;
+package com.cossystem.managedbean;
 
 import com.cossystem.core.exception.CossException;
 import com.cossystem.core.pojos.TblAccesoPantallasCampos;
 import com.cossystem.core.util.Configuracion;
 import com.cossystem.core.util.Filtro;
 import com.sun.faces.facelets.tag.IterationStatus;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.model.SelectItem;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.primefaces.context.RequestContext;
 
-public class FiltroEntidad implements Serializable {
+public class FiltroGenericBean {
 
     protected List<SelectItem> componentesComboCampos = new ArrayList<>();
     protected Class claseEntidad;
+    protected Class claseEntidadTransaccional;
     protected Integer idClaseEntidad;
     protected List<TblAccesoPantallasCampos> configuracion;
+    protected List<TblAccesoPantallasCampos> configuracionTransaccional;
     protected List<Filtro> filtros;
+    protected List<Filtro> filtrosTransaccional;
 
-    public FiltroEntidad() {
+    public FiltroGenericBean() {
         init();
     }
 
     public void init() {
-//        filtros = new ArrayList<>();
-//        filtros.add(new Filtro());
     }
 
     public List<SelectItem> getComponentesComboCampos() {
+        System.out.println("clase entidad: " + claseEntidad.getSimpleName());
         if (claseEntidad != null && componentesComboCampos.isEmpty()) {
-            System.out.println("se llena componentescombocampos");
             String nombreTabla = ((Table) claseEntidad.getAnnotation(Table.class)).name();
             Field[] camposEntidad = claseEntidad.getDeclaredFields();
             String nombreCampoClase;
@@ -70,13 +69,13 @@ public class FiltroEntidad implements Serializable {
     }
 
     public void setClaseEntidad(Class claseEntidad) {
+        this.claseEntidad = claseEntidad;
         try {
-            this.claseEntidad = claseEntidad;
             configuracion = Configuracion.obtieneConfiguracion(idClaseEntidad);
-            componentesComboCampos.clear();
         } catch (CossException ex) {
-            Logger.getLogger(FiltroEntidad.class.getName()).log(Level.SEVERE, null, ex);
+            configuracion = null;
         }
+        componentesComboCampos.clear();
     }
 
     public List<TblAccesoPantallasCampos> getConfiguracion() {
@@ -87,19 +86,7 @@ public class FiltroEntidad implements Serializable {
         this.configuracion = configuracion;
     }
 
-    public List<Filtro> getFiltros() {
-        boolean bndAdd = true;
-        if (filtros != null) {
-            for (Filtro filtro : filtros) {
-                if (filtro.isVisible()) {
-                    bndAdd = false;
-                    break;
-                }
-            }
-            if (bndAdd) {
-                filtros.add(new Filtro());
-            }
-        }
+    public List<Filtro> getFiltros() {        
         return filtros;
     }
 
@@ -113,8 +100,21 @@ public class FiltroEntidad implements Serializable {
         }
     }
 
-    public void eliminarFiltro(IterationStatus status) {
-        filtros.remove(status.getIndex());
+    public void eliminarFiltro(IterationStatus status, String nombreForm) {        
+        int contadorVisible = 0;
+        if (filtros != null && status.getIndex() <= filtros.size() - 1 && filtros.get(status.getIndex()).isVisible()) {
+            for (Filtro filtro : filtros) {
+                if (filtro.isVisible()) {
+                    contadorVisible++;
+                }
+            }
+            if (contadorVisible > 1) {
+                filtros.remove(status.getIndex());
+            } else {
+                filtros.set(status.getIndex(), new Filtro());
+            }
+        }
+        RequestContext.getCurrentInstance().reset(nombreForm);
     }
 
     public void selecionarCampo(IterationStatus status) {
@@ -125,6 +125,14 @@ public class FiltroEntidad implements Serializable {
             for (Field campo : camposClase) {
                 if (filtro.getNombreCampoClase().equals(campo.getName())) {
                     filtro.setCampoEntidad(campo);
+                    String nombreCampoTabla = campo.isAnnotationPresent(Column.class) ? ((Column) campo.getAnnotation(Column.class)).name() : campo.isAnnotationPresent(JoinColumn.class) ? ((JoinColumn) campo.getAnnotation(JoinColumn.class)).name() : null;
+                    for (TblAccesoPantallasCampos conf : configuracion) {
+                        if (nombreCampoTabla != null && conf.getNColumna().equals(nombreCampoTabla)) {
+                            filtro.setConfCampo(conf);
+                            filtro.setDescCampo(conf.getDescripcion());
+                            break;
+                        }
+                    }
                     if (String.class.getSimpleName().equals(campo.getType().getSimpleName())) {
                         filtro.setCampoString(true);
                         filtro.setCampoFecha(false);
@@ -177,5 +185,33 @@ public class FiltroEntidad implements Serializable {
         } else {
             filtro.setIntervalo(false);
         }
+    }
+
+    public Class getClaseEntidadTransaccional() {
+        return claseEntidadTransaccional;
+    }
+
+    public void setClaseEntidadTransaccional(Class claseEntidadTransaccional) {
+        this.claseEntidadTransaccional = claseEntidadTransaccional;
+    }
+
+    public List<TblAccesoPantallasCampos> getConfiguracionTransaccional() {
+        return configuracionTransaccional;
+    }
+
+    public void setConfiguracionTransaccional(List<TblAccesoPantallasCampos> configuracionTransaccional) {
+        this.configuracionTransaccional = configuracionTransaccional;
+    }
+
+    public List<Filtro> getFiltrosTransaccional() {
+        return filtrosTransaccional;
+    }
+
+    public void setFiltrosTransaccional(List<Filtro> filtrosTransaccional) {
+        this.filtrosTransaccional = filtrosTransaccional;
+    }
+
+    public void cerrarDialogoFiltro(String nombreDialogo) {
+        RequestContext.getCurrentInstance().execute("PF('" + nombreDialogo + "').hide()");
     }
 }

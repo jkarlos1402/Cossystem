@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:composition>            
+            <h:form id="formFrmEmpleado"> 
+                <div class="ui-fluid">
+                    <p:growl id="mensajesFrmEmpleado" showDetail="true" showSummary="true"/>                   
+                    <p:panelGrid id="panelformFrmEmpleado" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" columns="4" layout="grid">
+                        <f:facet name="header">
+                            <p>
+                                <h:outputText value="#{frmEmpleadoBean.nombreAccionFrm}" />                                
+                            </p>                        
+                        </f:facet> 
+                        <p:spacer/>
+                        <p:outputPanel style="width: 220px;margin: auto;" id="panelCarouselEmpleado">                           
+                            <div class="jcarousel-wrapper">
+                                <div class="jcarousel">
+                                    <ul>
+                                        <c:forEach items="#{frmEmpleadoBean.empleado.tblEmpleadosFotosList}" var="foto" varStatus="status">
+                                            <li>                                                 
+                                                <p:selectBooleanCheckbox value="#{foto.principal}" title="Principal" style="position: absolute;" disabled="#{not frmEmpleadoBean.permissionToWrite}">
+                                                    <p:ajax update="panelCarouselEmpleado" listener="#{frmEmpleadoBean.selectPrincipal(status.index)}" />
+                                                </p:selectBooleanCheckbox>
+                                                <p:commandButton icon="ui-icon-trash" update="panelCarouselEmpleado,mensajesFrmEmpleado" style="width: 30px; left: 168px;" title="Eliminar foto" actionListener="#{frmEmpleadoBean.eliminaFoto(foto.nombreFoto)}" immediate="true" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                                <p:graphicImage value="#{imagenBean.getImagen()}" height="160" width="220" style="max-height: 160px;" cache="false">
+                                                    <f:param name="nomFoto" value="#{foto.nombreFoto}"/>
+                                                    <f:param name="nomCarpeta" value="#{frmEmpleadoBean.empleado.idEmpleado}"/>                                
+                                                    <f:param name="indexFoto" value="#{status.index}"/>                                
+                                                </p:graphicImage>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </div>
+                                <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
+                                <a href="#" class="jcarousel-control-next">&rsaquo;</a>
+                                <p class="jcarousel-pagination"></p>
+                            </div>
+                            <script>
+                                inicializaCarousel();
+                            </script>
+                        </p:outputPanel>  
+                        <p:spacer/>
+                        <p:spacer rendered="#{frmEmpleadoBean.empleado.idEmpleado eq null or not frmEmpleadoBean.permissionToWrite}"/>
+                        <p:fileUpload style="width: 100%; margin: auto;" styleClass="uploadFoto" 
+                                      mode="advanced" auto="false" label="Elegir" uploadLabel="Subir" cancelLabel="Cancelar" 
+                                      allowTypes="/(\.|\/)(JPE?G|jpe?g|png|PNG)$/" fileUploadListener="#{frmEmpleadoBean.subirFoto}"
+                                      sizeLimit="1048576" invalidFileMessage="S&oacute;lo se adminten imagnes .jpg o .png"
+                                      invalidSizeMessage="Archivos menores a 1 MB"
+                                      rendered="#{frmEmpleadoBean.empleado.idEmpleado ne null and frmEmpleadoBean.permissionToWrite}"
+                                      update="panelCarouselEmpleado,mensajesFrmEmpleado"/>
+
+                        <c:forEach items="#{frmEmpleadoBean.camposClaseElemento}" var="campo" varStatus="status">
+                            <c:choose>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('TXT') and campo.campoClase.type.simpleName eq 'String' and not campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <p:inputText id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" maxlength="#{campo.configuracionCampo.tamanio}" required="#{campo.configuracionCampo.requerido}" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('TXT') and campo.campoClase.type.simpleName eq 'String' and campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>                                    
+                                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                                        <p:inputText id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" maxlength="#{campo.configuracionCampo.tamanio}" required="#{campo.configuracionCampo.requerido}" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                        <p:commandButton onclick="PF('dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}').show()" id="btnCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                                    </h:panelGrid>  
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('DTP') and campo.campoClase.type.simpleName eq 'Date' and not campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <p:calendar id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" required="#{campo.configuracionCampo.requerido}" pattern="#{campo.configuracionCampo.formatoCampo ne null and campo.configuracionCampo.formatoCampo ne '' ? campo.configuracionCampo.formatoCampo : 'dd/MM/yyyy'}" showTodayButton="true" mask="true" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('DTP') and campo.campoClase.type.simpleName eq 'Date' and campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                                        <p:calendar id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" required="#{campo.configuracionCampo.requerido}" pattern="#{campo.configuracionCampo.formatoCampo ne null and campo.configuracionCampo.formatoCampo ne '' ? campo.configuracionCampo.formatoCampo : 'dd/MM/yyyy'}" showTodayButton="true" mask="true" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                        <p:commandButton onclick="PF('dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}').show()" id="btnCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                                    </h:panelGrid>                                    
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('TXT') and (campo.campoClase.type.simpleName eq 'Integer' or campo.campoClase.type.simpleName eq 'Double' or campo.campoClase.type.simpleName eq 'Float') and not campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <p:inputNumber id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" maxlength="#{campo.configuracionCampo.tamanio}" required="#{campo.configuracionCampo.requerido}" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('TXT') and (campo.campoClase.type.simpleName eq 'Integer' or campo.campoClase.type.simpleName eq 'Double' or campo.campoClase.type.simpleName eq 'Float') and campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                                        <p:inputNumber id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" maxlength="#{campo.configuracionCampo.tamanio}" required="#{campo.configuracionCampo.requerido}" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                        <p:commandButton onclick="PF('dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}').show()" id="btnCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                                    </h:panelGrid>                                    
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('CHK') and not campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <p:selectBooleanButton id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" onLabel="S&iacute;" offLabel="No" style="width:60px" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('CHK') and campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                                        <p:selectBooleanButton id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" onLabel="S&iacute;" offLabel="No" style="width:60px" disabled="#{not frmEmpleadoBean.permissionToWrite}"/>
+                                        <p:commandButton onclick="PF('dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}').show()" id="btnCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                                    </h:panelGrid>                                    
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('CMB') and not campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <h:selectOneMenu id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" converter="genericConverter" styleClass="comboResponsivo" disabled="#{not frmEmpleadoBean.permissionToWrite}">
+                                        <f:selectItem itemValue="" itemLabel="Seleccione" noSelectionOption="true"/>
+                                        <f:selectItems value="#{campo.componentesCatalogoCombo}" var="catalogo" itemValue="#{catalogo}" itemLabel="#{catalogo}"/>
+                                    </h:selectOneMenu>
+                                </c:when>
+                                <c:when test="#{campo.configuracionCampo.visibleDetalle and campo.configuracionCampo.objetoPresentacion.equalsIgnoreCase('CMB') and campo.configuracionCampo.botonRelacional}">
+                                    <p:outputLabel for="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{campo.configuracionCampo.descripcion}:"/>
+                                    <h:panelGrid columns="2" styleClass="panelSinBordes panelSinPadding panelCombo" width="100%" columnClasses=",tdBotonCatalogo">
+                                        <h:selectOneMenu id="campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" value="#{frmEmpleadoBean.elemento[campo.campoClase.name]}" converter="genericConverter" styleClass="comboResponsivo" disabled="#{not frmEmpleadoBean.permissionToWrite}">
+                                            <f:selectItem itemValue="" itemLabel="Seleccione" noSelectionOption="true"/>
+                                            <f:selectItems value="#{campo.componentesCatalogoCombo}" var="catalogo" itemValue="#{catalogo}" itemLabel="#{catalogo}"/>
+                                        </h:selectOneMenu>
+                                        <p:commandButton onclick="PF('dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}').show()" id="btnCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" icon="iconoAmpliar" rendered="#{empleadoFrmBean.permissionToWrite}" />
+                                    </h:panelGrid>                                    
+                                </c:when>
+                            </c:choose>
+                        </c:forEach>
+                        <f:facet name="footer">
+                            <p:panelGrid columns="7" columnClasses="ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-2,ui-grid-col-1,ui-grid-col-1" styleClass="ui-panelgrid-blank" layout="grid">
+                                <p:commandButton id="btnAgregaProspectos" value="Agregar Prospectos" rendered="#{frmEmpleadoBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnAgregaTareas" value="Agregar Tareas" rendered="#{frmEmpleadoBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnRegistroActividad" value="Registro de Actividad" rendered="#{frmEmpleadoBean.permissionToWrite}"/>    
+                                <p:commandButton id="btnEnviar" value="Enviar" rendered="#{frmEmpleadoBean.permissionToWrite}"/>                                            
+                                <p:commandButton id="btnImprimirReporte" icon="fa fa-fw fa-print" iconPos="left" value="Imprimir" rendered="#{frmEmpleadoBean.permissionToWrite}"/>
+                                <p:commandButton id="btnNuevoFrmEmpleado" value="Nuevo" process="@this" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="iconoNuevo" iconPos="left" action="#{frmEmpleadoBean.nuevoElemento}" actionListener="#{principalBean.resetFormulario('formFrmEmpleado')}" rendered="#{frmEmpleadoBean.permissionToWrite}">
+                                    <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
+                                </p:commandButton> 
+                                <p:commandButton id="btnGuardarEmpleado" value="Guardar" update="formFrmEmpleado,:formFrmEmpleado:mensajesFrmEmpleado" icon="fa fa-fw fa-save" iconPos="left" actionListener="#{frmEmpleadoBean.guardarElemento}" rendered="#{frmEmpleadoBean.permissionToWrite}">
+                                    <p:confirm header="Confirmar" message="&iquest;Est&aacute; seguro?"/>                         
+                                </p:commandButton> 
+                            </p:panelGrid>                                    
+                        </f:facet>
+                    </p:panelGrid>
+                    <p:blockUI block="formFrmEmpleado" trigger="btnGuardarEmpleado">                    
+                        <p style="font-size:14px; color: black;">
+                            Cargando...
+                        </p> 
+                    </p:blockUI> 
+                </div>
+            </h:form>       
+            <c:forEach items="#{frmEmpleadoBean.camposClaseElemento}" var="campo" varStatus="status">
+                <c:if test="#{campo.configuracionCampo.llaveForaneas and campo.configuracionCampo.botonRelacional}">
+                    <p:dialog appendTo="@(body)" dynamic="true" header="Cat&aacute;logo #{campo.configuracionCampo.desCatalogo}" widgetVar="dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" id="dialogCatalogo#{campo.campoClase.name}#{campo.configuracionCampo.NColumna}" maximizable="false" draggable="false" modal="true" closeOnEscape="true">
+                        <p:ajax event="open" listener="#{campo.setBndCargarCatalogo(true)}"/>
+                        <p:ajax event="close" update=":formFrmEmpleado:campoFrm#{campo.configuracionCampo.NTabla}#{campo.configuracionCampo.NColumna}" listener="#{frmEmpleadoBean.init}"/>
+                    </p:dialog>
+                </c:if>
+            </c:forEach>                      
+        </ui:composition>
+    </h:body>
+</html>
+

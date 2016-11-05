@@ -1,6 +1,6 @@
 package com.cossystem.filtros;
 
-import com.cossystem.core.pojos.catalogos.CatUsuarios;
+import com.cossystem.core.pojos.CatUsuarios;
 import java.io.IOException;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author TMXIDSJPINAM
  */
-@WebFilter(filterName = "AccessFilter", urlPatterns = {"/login.xhtml", "/home.xhtml"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE})
-public class AccessFilter implements Filter {  
+@WebFilter(filterName = "AccessFilter", urlPatterns = {"/login.xhtml", "/home.xhtml", "/pages/*"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ERROR, DispatcherType.INCLUDE})
+public class AccessFilter implements Filter {
 
     /**
      *
@@ -42,12 +42,16 @@ public class AccessFilter implements Filter {
         if (session != null) {
             usuario = (CatUsuarios) session.getAttribute("session_user");
         }
-        if (usuario != null && usuario.getIdUsuario() != null && !url.contains("home.xhtml")) {
-            RequestDispatcher rd = request.getRequestDispatcher("home.xhtml");
+        System.out.println("url: " + url);
+        System.out.println("usuario: " + usuario);
+        if (usuario == null && !url.contains("login.xhtml")) {
+            RequestDispatcher rd = request.getRequestDispatcher("/login.xhtml");
             rd.forward(request, response);
-        } else if (usuario == null && url.contains("home.xhtml") && "get".equalsIgnoreCase(req.getMethod())) {
-            res.sendError(404);
+        } else if (usuario != null && !url.contains("pages") && !url.contains("home.xhtml")) {
+            RequestDispatcher rd = request.getRequestDispatcher("/home.xhtml");
+            rd.forward(request, response);
         } else {
+            System.out.println("pasara el filtro");
             chain.doFilter(request, response);
         }
     }
@@ -67,7 +71,7 @@ public class AccessFilter implements Filter {
      */
     @Override
     public void destroy() {
-         // comentario
+        // comentario
     }
 
 }

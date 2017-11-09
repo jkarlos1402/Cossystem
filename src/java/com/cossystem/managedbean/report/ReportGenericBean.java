@@ -61,14 +61,18 @@ public class ReportGenericBean implements Serializable {
             propiedadesIniciales.load(new FileInputStream(contextPathResources + File.separator + "WEB-INF" + File.separator + "initConfig.properties"));
             Properties propiedades = new Properties();
             propiedades.load(new FileInputStream(propiedadesIniciales.getProperty("configPath") + File.separator + "config.properties"));
-            String rutaReporte = propiedades.getProperty("reportPath") + File.separator + nombreReporte + ".rpt";
-            ReportClientDocument clientDoc = (ReportClientDocument) httpSession.getAttribute(rutaReporte);
+            String rutaReporte = propiedades.getProperty("reportPath") + File.separator + nombreReporte;
+            System.out.println("ruta reporte: "+rutaReporte+" : "+httpSession.getAttribute(rutaReporte));
+            ReportClientDocument clientDoc = httpSession.getAttribute(rutaReporte) == null ? null : (ReportClientDocument) httpSession.getAttribute(rutaReporte);
             if (clientDoc != null) {
+                System.out.println("clientDoc no es nulo");
                 try {
                     clientDoc.getStatusVariables();
                 } catch (ReportSDKException ex) {
                     clientDoc = null;
                 }
+            }else{
+                System.out.println("clientDoc es nulo "+clientDoc);
             }
             if (clientDoc == null) {
                 clientDoc = new ReportClientDocument();
